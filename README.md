@@ -1,7 +1,9 @@
 # sanitize-filename
 
-Sanitize user input for safe use as a file name in Unix or Windows
-systems.
+Sanitize a string to be safe for use as a file name in Windows and Unix
+systems by stripping all [control
+characters](http://en.wikipedia.org/wiki/C0_and_C1_control_codes) and
+restricted characters (`\/:*?"<>|`).
 
 # Example
 
@@ -17,9 +19,7 @@ fs.end("hello world");
 
 ## sanitize(filename)
 
-Removes all [control
-characters](http://en.wikipedia.org/wiki/C0_and_C1_control_codes) and
-restricted characters (`"\/:*?"<>|`) from the input string.
+Sanitize the input string.
 
 # Installation
 
