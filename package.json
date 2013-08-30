@@ -1,6 +1,6 @@
 {
   "name": "sanitize-filename",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Sanitize user input for use as a filename",
   "main": "index.js",
   "scripts": {
