@@ -8,6 +8,11 @@ test("valid names", function(t) {
 	t.end();
 });
 
+test("null character", function(t) {
+	t.equal(sanitize("hello\u0000world"), "helloworld");
+	t.end();
+});
+
 test("control characters", function(t) {
 	t.equal(sanitize("hello\nworld"), "helloworld");
 	t.end();
