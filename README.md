@@ -21,9 +21,9 @@ require("fs").createWriteStream(filename).end();
 
 # API
 
-## sanitize(filename)
+## sanitize(filename, [replacement])
 
-Sanitize the input string.
+Sanitize the input string and replace unsafe characters with optional replacement.
 
 # Installation
 
