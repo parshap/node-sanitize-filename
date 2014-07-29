@@ -1,13 +1,15 @@
 // jshint node:true
 "use strict";
 
-module.exports = function(input, replacement) {
+module.exports = function(input, options) {
+	var replacement = options && options.replacement;
 	var retval = "", i;
 	for (i = 0; i < input.length; i++) {
 		if (isSafeCode(input.charCodeAt(i))) {
 			retval += input[i];
-		} else {
-			retval += replacement ? replacement : '';
+		}
+		else if (replacement) {
+			retval += replacement;
 		}
 	}
 	return retval;

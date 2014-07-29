@@ -1,6 +1,10 @@
 var test = require("tape"),
 	sanitize = require("./");
 
+var REPLACEMENT_OPTS = {
+	replacement: "_",
+};
+
 test("valid names", function(t) {
 	["valid name.mp3", "résumé"].forEach(function(name) {
 		t.equal(sanitize(name), name);
@@ -10,7 +14,7 @@ test("valid names", function(t) {
 
 test("valid names", function(t) {
 	["valid name.mp3", "résumé"].forEach(function(name) {
-		t.equal(sanitize(name, "_"), name);
+		t.equal(sanitize(name, REPLACEMENT_OPTS), name);
 	});
 	t.end();
 });
@@ -21,7 +25,7 @@ test("null character", function(t) {
 });
 
 test("null character", function(t) {
-	t.equal(sanitize("hello\u0000world", "_"), "hello_world");
+	t.equal(sanitize("hello\u0000world", REPLACEMENT_OPTS), "hello_world");
 	t.end();
 });
 
@@ -31,7 +35,7 @@ test("control characters", function(t) {
 });
 
 test("control characters", function(t) {
-	t.equal(sanitize("hello\nworld", "_"), "hello_world");
+	t.equal(sanitize("hello\nworld", REPLACEMENT_OPTS), "hello_world");
 	t.end();
 });
 
@@ -44,7 +48,7 @@ test("restricted codes", function(t) {
 
 test("restricted codes", function(t) {
 	["h?w", "h/w", "h*w"].forEach(function(name) {
-		t.equal(sanitize(name, "_"), "h_w");
+		t.equal(sanitize(name, REPLACEMENT_OPTS), "h_w");
 	});
 	t.end();
 });
