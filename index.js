@@ -1,36 +1,25 @@
-// jshint node:true
-"use strict";
+/*jshint node:true*/
+'use strict';
 
-module.exports = function(input, options) {
-	var replacement = options && options.replacement;
-	var retval = "", i;
-	for (i = 0; i < input.length; i++) {
-		if (isSafeCode(input.charCodeAt(i))) {
-			retval += input[i];
-		}
-		else if (replacement) {
-			retval += replacement;
-		}
-	}
-	return retval;
+/**
+ * Replaces characters in strings that are illegal/unsafe for filenames.
+ * Unsafe characters are either removed or replaced by a substitute set
+ * in the optional `options` object.
+ *
+ * Illegal Characters on Various Operating Systems
+ * / ? < > \ : * | "
+ * https://kb.acronis.com/content/39790
+ * 
+ * Unicode Control codes
+ * C0 0x00-0x1f & C1 (0x80-0x9f)
+ * http://en.wikipedia.org/wiki/C0_and_C1_control_codes
+ * 
+ * @param  {String} input   Original filename
+ * @param  {Object} options {replacement: String}
+ * @return {String}         Sanitized filename
+ */
+module.exports = function (input, options) {
+  var replacement  = (options && options.replacement) || '',
+      regex        = /[\/\?<>\\:\*\|":\x00-\x1f\x80-\x9f]/g;
+  return input.replace(regex, replacement);
 };
-
-function isSafeCode(code) {
-	return ! isControlCode(code) && ! isRestrictedCode(code);
-}
-
-function isControlCode(code) {
-// Unicode Control codes
-// C0 0x00-0x1f & C1 (0x80-0x9f)
-// http://en.wikipedia.org/wiki/C0_and_C1_control_codes
-	return code <= 0x1f || (code >= 0x80 && code <= 0x9f);
-}
-
-// Codes restricted in Windows ("/" also restricted in Linux)
-var RESTRICTED_CODES = "\\/:*?\"<>|".split("").map(function(char) {
-	return char.charCodeAt(0);
-});
-
-function isRestrictedCode(code) {
-	return RESTRICTED_CODES.indexOf(code) !== -1;
-}
