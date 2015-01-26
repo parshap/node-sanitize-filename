@@ -52,3 +52,15 @@ test("restricted codes", function(t) {
 	});
 	t.end();
 });
+
+test("relative paths", function(t) {
+	[".", "..", "./", "../", "/..",, "/../", "*.|."].forEach(function(name) {
+		t.equal(sanitize(name), "");
+		t.end();
+	});
+});
+
+test("relative path with replacement", function(t) {
+	t.equal(sanitize("..", REPLACEMENT_OPTS), "_");
+	t.end();
+});

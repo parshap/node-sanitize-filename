@@ -23,10 +23,12 @@
 
 var illegalRe = /[\/\?<>\\:\*\|":]/g;
 var controlRe = /[\x00-\x1f\x80-\x9fj]/g;
+var reservedRe = /^\.+$/;
 
 module.exports = function (input, options) {
   var replacement  = (options && options.replacement) || '';
   return input
     .replace(illegalRe, replacement)
-    .replace(controlRe, replacement);
+    .replace(controlRe, replacement)
+    .replace(reservedRe, replacement);
 };
