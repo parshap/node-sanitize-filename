@@ -6,7 +6,8 @@ var REPLACEMENT_OPTS = {
 };
 
 test("valid names", function(t) {
-	["valid name.mp3", "résumé"].forEach(function(name) {
+	["the quick brown fox jumped over the lazy dog.mp3",
+		"résumé"].forEach(function(name) {
 		t.equal(sanitize(name), name);
 	});
 	t.end();
