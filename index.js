@@ -22,7 +22,7 @@
  */
 
 var illegalRe = /[\/\?<>\\:\*\|":]/g;
-var controlRe = /[\x00-\x1f\x80-\x9fj]/g;
+var controlRe = /[\x00-\x1f\x80-\x9f]/g;
 var reservedRe = /^\.+$/;
 
 module.exports = function (input, options) {
