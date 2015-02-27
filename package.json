@@ -22,6 +22,6 @@
   "license": "Public Domain",
   "devDependencies": {
     "mktemp": "^0.4.0",
-    "tape": "~1.0.4"
+    "tape": "^3.5.0"
   }
 }
