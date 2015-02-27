@@ -5,7 +5,7 @@ systems by stripping all [control
 characters](http://en.wikipedia.org/wiki/C0_and_C1_control_codes) and
 restricted characters (`\/:*?"<>|`).
 
-# Example
+## Usage
 
 ```js
 // Some string that may be unsafe as a filesystem filename
@@ -19,15 +19,26 @@ var sanitize = require("sanitize-filename"),
 require("fs").createWriteStream(filename).end();
 ```
 
-# API
+### Unique filenames
 
-## sanitize(filename, [options])
+Note that two unique inputs can result in the same output. For example,
+`sanitize("file?")` and `sanitize("file*")` will both return `"file"`.
 
-Sanitize the input string, `filename`, and replace unsafe characters
-with optional replacement. The `options.replacement` can be a string to
-replace unsafe characters with.
+### Empty filenames
 
-# Installation
+Note that the return value can be an empty string. For example,
+`sanitize("><")` will return `""`. To avoid this, use a default value
+(e.g., `sanitize("><") || "default"`) or `options.replacement`.
+
+## API
+
+### sanitize(filename, [options])
+
+Sanitize the input string, `filename`, removing or replacing unsafe
+characters. The `options.replacement` can be a string to replace unsafe
+characters with.
+
+## Installation
 
 ```
 npm install sanitize-filename
