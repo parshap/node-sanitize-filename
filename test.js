@@ -57,8 +57,8 @@ test("restricted codes", function(t) {
 test("relative paths", function(t) {
 	[".", "..", "./", "../", "/..", "/../", "*.|."].forEach(function(name) {
 		t.equal(sanitize(name), "");
-		t.end();
 	});
+	t.end();
 });
 
 test("relative path with replacement", function(t) {
