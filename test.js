@@ -55,7 +55,7 @@ test("restricted codes", function(t) {
 });
 
 test("relative paths", function(t) {
-	[".", "..", "./", "../", "/..",, "/../", "*.|."].forEach(function(name) {
+	[".", "..", "./", "../", "/..", "/../", "*.|."].forEach(function(name) {
 		t.equal(sanitize(name), "");
 		t.end();
 	});
@@ -64,4 +64,52 @@ test("relative paths", function(t) {
 test("relative path with replacement", function(t) {
 	t.equal(sanitize("..", REPLACEMENT_OPTS), "_");
 	t.end();
+});
+
+// Test writing files to the fs
+//
+
+var fs = require("fs");
+var path = require("path");
+var mktemp = require("mktemp");
+var tempdir = mktemp.createDirSync("sanitize-filename-test-XXXXXX");
+
+[
+	"the quick brown fox jumped over the lazy dog",
+	"résumé",
+	"hello\u0000world",
+	"hello\nworld",
+	"h?w",
+	"h/w",
+	"h*w",
+	".",
+	"..",
+	"./",
+	"../",
+	"/..",
+	"/../",
+	"*.|.",
+].forEach(function(name) {
+	test("write " + name, function(t) {
+		name = sanitize(name) || "default";
+		var filepath = path.join(tempdir, name);
+		fs.writeFile(filepath, function(err) {
+			t.ifError(err);
+			fs.stat(filepath, function(err, stat) {
+				t.ifError(err);
+				t.ok(stat);
+				fs.unlink(filepath, function(err) {
+					t.ifError(err);
+					t.end();
+				});
+			});
+		});
+	});
+});
+
+test("remove temp directory", function(t) {
+	fs.rmdir(tempdir, function(err) {
+		t.ifError(err);
+		t.end();
+	});
 });
