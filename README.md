@@ -3,10 +3,11 @@
 [![build
 status](https://secure.travis-ci.org/parshap/node-sanitize-filename.svg?branch=master)](http://travis-ci.org/parshap/node-sanitize-filename)
 
-Sanitize a string to be safe for use as a file name in Windows and Unix
-systems by stripping all [control
-characters](http://en.wikipedia.org/wiki/C0_and_C1_control_codes) and
-restricted characters (`\/:*?"<>|`).
+Sanitize a string to be safe for use as a filename in Windows and Unix
+file systems by stripping [control
+characters](http://en.wikipedia.org/wiki/C0_and_C1_control_codes),
+restricted characters `\/:*?"<>|`, and the reserved filenames, `.` and
+`..`.
 
 ## Usage
 
