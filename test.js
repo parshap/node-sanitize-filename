@@ -86,7 +86,8 @@ var tempdir = mktemp.createDirSync("sanitize-filename-test-XXXXXX");
 	"col:on.js",
 	"star*.js",
 	"question?.js",
-	"quote".js",
+	"quote\".js",
+	"singlequote'.js",
 	"brack<e>ts.js",
 	"p|pes.js",
 	"plus+.js",
@@ -111,7 +112,7 @@ var tempdir = mktemp.createDirSync("sanitize-filename-test-XXXXXX");
 			t.ifError(err);
 			fs.stat(filepath, function(err, stat) {
 				t.ifError(err);
-				t.ok(stat);
+				t.ok(stat, filepath);
 				fs.unlink(filepath, function(err) {
 					t.ifError(err);
 					t.end();
