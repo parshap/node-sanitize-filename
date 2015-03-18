@@ -79,7 +79,7 @@ test("reserved filename in Windows", function(t) {
 test("reserved filename in Windows with replacement", function(t) {
 	t.equal(sanitize("con", REPLACEMENT_OPTS), "_");
 	t.equal(sanitize("COM1", REPLACEMENT_OPTS), "_");
-	t.equal(sanitize("PRN."), REPLACEMENT_OPTS), "_");
+	t.equal(sanitize("PRN.", REPLACEMENT_OPTS), "_");
 	t.equal(sanitize("aux.txt", REPLACEMENT_OPTS), "_");
 	t.equal(sanitize("LPT9.asdfasdf", REPLACEMENT_OPTS), "_");
 	t.equal(sanitize("LPT10.txt", REPLACEMENT_OPTS), "LPT10.txt");
