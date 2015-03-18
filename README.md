@@ -6,8 +6,11 @@ status](https://secure.travis-ci.org/parshap/node-sanitize-filename.svg?branch=m
 Sanitize a string to be safe for use as a filename in Windows and Unix
 file systems by stripping [control
 characters](http://en.wikipedia.org/wiki/C0_and_C1_control_codes),
-restricted characters `\/:*?"<>|`, and the reserved filenames, `.` and
-`..`.
+restricted characters `\/:*?"<>|`, and the reserved filenames: `.` and
+`..` for Unix-based systems and `CON`, `PRN`, `AUX`, `NUL`, `COM1`, 
+`COM2`, `COM3`, `COM4`, `COM5`, `COM6`, `COM7`, `COM8`, `COM9`, `LPT1`,
+`LPT2`, `LPT3`, `LPT4`, `LPT5`, `LPT6`, `LPT7`, `LPT8` and `LPT9` 
+(case-insesitively, with or without filename extensions) for Windows.
 
 ## Usage
 
