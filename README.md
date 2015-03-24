@@ -35,7 +35,7 @@ Note that two unique inputs can result in the same output. For example,
 
 Note that the return value can be an empty string. For example,
 `sanitize("><")` will return `""`. To avoid this, use a default value
-(e.g., `sanitize("><") || "default"`) or `options.replacement`.
+(e.g., `sanitize("><") || "default"`).
 
 ## API
 
