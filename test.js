@@ -86,6 +86,14 @@ test("reserved filename in Windows with replacement", function(t) {
 	t.end();
 });
 
+test("invalid replacement", function (t) {
+	t.equal(sanitize(".", { replacement: "."}), "");
+	t.equal(sanitize("foo?.txt", { replacement: ">"}), "foo.txt");
+	t.equal(sanitize("con.txt", { replacement: "aux"}), "");
+	t.equal(sanitize("valid.txt", { replacement: "\/:*?\"<>|"}), "valid.txt");
+	t.end();
+});
+
 // Test writing files to the fs
 //
 
