@@ -109,7 +109,7 @@ var tempdir = mktemp.createDirSync("sanitize-filename-test-XXXXXX");
   "hello\nworld",
   "semi;colon.js",
   ";leading-semi.js",
-  "slash\.js",
+  "slash\\.js",
   "slash/.js",
   "col:on.js",
   "star*.js",
@@ -120,7 +120,13 @@ var tempdir = mktemp.createDirSync("sanitize-filename-test-XXXXXX");
   "p|pes.js",
   "plus+.js",
   "'five and six<seven'.js",
-  "terminatingperiod.",
+  " space at front",
+  "space at end ",
+  ".period",
+  "period.",
+  "relative/path/to/some/dir",
+  "/abs/path/to/some/dir",
+  "~/.\u0000notssh/authorized_keys",
   "",
   "h?w",
   "h/w",
@@ -136,11 +142,12 @@ var tempdir = mktemp.createDirSync("sanitize-filename-test-XXXXXX");
   test("write " + name, function(t) {
     name = sanitize(name) || "default";
     var filepath = path.join(tempdir, name);
-    fs.writeFile(filepath, function(err) {
+    t.equal(path.dirname(path.normalize(filepath)), tempdir);
+    fs.writeFile(filepath, "foobar", function(err) {
       t.ifError(err);
-      fs.stat(filepath, function(err, stat) {
+      fs.readFile(filepath, function(err, data) {
         t.ifError(err);
-        t.ok(stat, filepath);
+        t.equal(data.toString(), "foobar", filepath);
         fs.unlink(filepath, function(err) {
           t.ifError(err);
           t.end();
