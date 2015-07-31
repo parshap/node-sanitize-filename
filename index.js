@@ -43,8 +43,8 @@ function sanitize(input, replacement) {
 }
 
 module.exports = function (input, options) {
-  var replacement = (options && options.replacement) || '',
-      output = sanitize(input, replacement);
+  var replacement = (options && options.replacement) || '';
+  var output = sanitize(input, replacement);
   if (replacement === '') {
     return output;
   }
