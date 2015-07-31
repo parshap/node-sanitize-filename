@@ -20,6 +20,9 @@
  * "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", and
  * "LPT9") case-insesitively and with or without filename extensions.
  *
+ * Capped at 255 characters in length.
+ * http://unix.stackexchange.com/questions/32795/what-is-the-maximum-allowed-filename-and-folder-size-with-ecryptfs
+ *
  * @param  {String} input   Original filename
  * @param  {Object} options {replacement: String}
  * @return {String}         Sanitized filename
@@ -35,7 +38,8 @@ function sanitize(input, replacement) {
     .replace(illegalRe, replacement)
     .replace(controlRe, replacement)
     .replace(reservedRe, replacement)
-    .replace(windowsReservedRe, replacement);
+    .replace(windowsReservedRe, replacement)
+    .slice(0, 255);
 }
 
 module.exports = function (input, options) {

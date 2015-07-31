@@ -35,6 +35,10 @@ following and removes them.
 [control characters]: https://en.wikipedia.org/wiki/C0_and_C1_control_codes
 [reserved characters]: https://kb.acronis.com/content/39790
 
+The return value is capped at [255 characters in length][255].
+
+[255]: http://unix.stackexchange.com/questions/32795/what-is-the-maximum-allowed-filename-and-folder-size-with-ecryptfs
+
 ### File Systems
 
 The return value will be safe for use as a filename on modern Windows,

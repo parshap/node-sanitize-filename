@@ -94,6 +94,13 @@ test("invalid replacement", function (t) {
   t.end();
 });
 
+test("255 characters max", function(t) {
+  var string = new Array(300).join("a");
+  t.ok(string.length > 255);
+  t.ok(sanitize(string).length <= 255);
+  t.end();
+});
+
 // Test writing files to the fs
 //
 
@@ -103,6 +110,7 @@ var mktemp = require("mktemp");
 var tempdir = mktemp.createDirSync("sanitize-filename-test-XXXXXX");
 
 [
+  new Array(300).join("a"),
   "the quick brown fox jumped over the lazy dog",
   "résumé",
   "hello\u0000world",
