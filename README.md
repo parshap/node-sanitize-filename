@@ -15,7 +15,7 @@ var sanitize = require("sanitize-filename");
 var UNSAFE_USER_INPUT = "~/.\u0000ssh/authorized_keys";
 
 // Sanitize the string to be safe for use as a filename.
-var filename = sanitize(UNSAFE_FILENAME);
+var filename = sanitize(UNSAFE_USER_INPUT);
 // -> "~.sshauthrozied_keys"
 ```
 
