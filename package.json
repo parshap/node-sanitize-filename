@@ -1,7 +1,7 @@
 {
   "name": "sanitize-filename",
   "version": "1.4.1",
-  "description": "Sanitize string for use as filename",
+  "description": "Sanitize a string for use as a filename",
   "main": "index.js",
   "scripts": {
     "test": "node test.js"

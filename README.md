@@ -3,8 +3,8 @@
 [![build
 status](https://secure.travis-ci.org/parshap/node-sanitize-filename.svg?branch=master)](http://travis-ci.org/parshap/node-sanitize-filename)
 
-Sanitize a string to be safe for use as a filename in Windows and Unix
-file systems.
+Sanitize a string to be safe for use as a filename by removing directory
+paths and invalid characters.
 
 ## Example
 
@@ -16,7 +16,7 @@ var UNSAFE_USER_INPUT = "~/.\u0000ssh/authorized_keys";
 
 // Sanitize the string to be safe for use as a filename.
 var filename = sanitize(UNSAFE_USER_INPUT);
-// -> "~.sshauthrozied_keys"
+// -> "~.sshauthorized_keys"
 ```
 
 ## Details
@@ -39,6 +39,9 @@ The return value is capped at [255 characters in length][255].
 
 [255]: http://unix.stackexchange.com/questions/32795/what-is-the-maximum-allowed-filename-and-folder-size-with-ecryptfs
 
+This guarantees that the resulting string does not contain directory
+paths (no `/` or `\` characters) and is a valid filename.
+
 ### File Systems
 
 The return value will be safe for use as a filename on modern Windows,
@@ -48,7 +51,7 @@ OSX, and Unix file systems (`NTFS`, `ext`, etc.).
 
 [8.3]: https://en.wikipedia.org/wiki/8.3_filename
 
-### Testing Your File System
+#### Testing Your File System
 
 Running tests will attempt write various filenames to disk (in the
 working directory). Run `npm test` to run tests against your file
