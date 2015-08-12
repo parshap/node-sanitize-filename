@@ -53,9 +53,11 @@ OSX, and Unix file systems (`NTFS`, `ext`, etc.).
 
 #### Testing Your File System
 
-Running tests will attempt write various filenames to disk (in the
-working directory). Run `npm test` to run tests against your file
-system.
+The test program will attempt to use various strings (including the [Big
+List of Naughty Strings][blns]) to create files in the working
+directory. Run `npm test` to run tests against your file system.
+
+[blns]: https://github.com/minimaxir/big-list-of-naughty-strings
 
 ### Non-unique Filenames
 

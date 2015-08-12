@@ -109,59 +109,84 @@ var path = require("path");
 var mktemp = require("mktemp");
 var tempdir = mktemp.createDirSync("sanitize-filename-test-XXXXXX");
 
-[
-  new Array(300).join("a"),
-  "the quick brown fox jumped over the lazy dog",
-  "résumé",
-  "hello\u0000world",
-  "hello\nworld",
-  "semi;colon.js",
-  ";leading-semi.js",
-  "slash\\.js",
-  "slash/.js",
-  "col:on.js",
-  "star*.js",
-  "question?.js",
-  "quote\".js",
-  "singlequote'.js",
-  "brack<e>ts.js",
-  "p|pes.js",
-  "plus+.js",
-  "'five and six<seven'.js",
-  " space at front",
-  "space at end ",
-  ".period",
-  "period.",
-  "relative/path/to/some/dir",
-  "/abs/path/to/some/dir",
-  "~/.\u0000notssh/authorized_keys",
-  "",
-  "h?w",
-  "h/w",
-  "h*w",
-  ".",
-  "..",
-  "./",
-  "../",
-  "/..",
-  "/../",
-  "*.|.",
-].forEach(function(name) {
-  test("write " + name, function(t) {
-    name = sanitize(name) || "default";
-    var filepath = path.join(tempdir, name);
-    t.equal(path.dirname(path.normalize(filepath)), tempdir);
-    fs.writeFile(filepath, "foobar", function(err) {
-      t.ifError(err);
-      fs.readFile(filepath, function(err, data) {
-        t.ifError(err);
-        t.equal(data.toString(), "foobar", filepath);
-        fs.unlink(filepath, function(err) {
-          t.ifError(err);
-          t.end();
-        });
+try {
+  var blns = require("./vendor/big-list-of-naughty-strings/blns.json");
+}
+catch (err) {
+  console.error("Error: Cannot load file './vendor/big-list-of-naughty-strings/blns.json'");
+  console.error();
+  console.error("Make sure you've initialized git submodules by running");
+  console.error();
+  console.error("    git submodule update --init");
+  console.error();
+  process.exit(1);
+}
+
+function testString(str, t) {
+  var sanitized = sanitize(str) || "default";
+  var filepath = path.join(tempdir, sanitized);
+
+  // Should not contain any directories or relative paths
+  t.equal(path.dirname(path.resolve("/abs/path", sanitized)), "/abs/path");
+
+  // Should write and read file to disk
+  t.equal(path.dirname(path.normalize(filepath)), tempdir);
+  fs.writeFile(filepath, "foobar", function(err) {
+    t.ifError(err, "no error writing file");
+    fs.readFile(filepath, function(err, data) {
+      t.ifError(err, "no error reading file");
+      t.equal(data.toString(), "foobar", "file contents equals");
+      fs.unlink(filepath, function(err) {
+        t.ifError(err, "no error unlinking file");
+        t.end();
       });
     });
+  });
+}
+
+[].concat(
+  [
+    new Array(300).join("a"),
+    "the quick brown fox jumped over the lazy dog",
+    "résumé",
+    "hello\u0000world",
+    "hello\nworld",
+    "semi;colon.js",
+    ";leading-semi.js",
+    "slash\\.js",
+    "slash/.js",
+    "col:on.js",
+    "star*.js",
+    "question?.js",
+    "quote\".js",
+    "singlequote'.js",
+    "brack<e>ts.js",
+    "p|pes.js",
+    "plus+.js",
+    "'five and six<seven'.js",
+    " space at front",
+    "space at end ",
+    ".period",
+    "period.",
+    "relative/path/to/some/dir",
+    "/abs/path/to/some/dir",
+    "~/.\u0000notssh/authorized_keys",
+    "",
+    "h?w",
+    "h/w",
+    "h*w",
+    ".",
+    "..",
+    "./",
+    "../",
+    "/..",
+    "/../",
+    "*.|.",
+  ],
+  blns
+).forEach(function(str) {
+  test(JSON.stringify(str), function(t) {
+    testString(str, t);
   });
 });
 
