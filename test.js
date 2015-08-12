@@ -129,6 +129,9 @@ function testString(str, t) {
   // Should not contain any directories or relative paths
   t.equal(path.dirname(path.resolve("/abs/path", sanitized)), "/abs/path");
 
+  // Should be max 255 bytes
+  t.assert(Buffer.byteLength(sanitized) <= 255, "max 255 bytes");
+
   // Should write and read file to disk
   t.equal(path.dirname(path.normalize(filepath)), tempdir);
   fs.writeFile(filepath, "foobar", function(err) {
