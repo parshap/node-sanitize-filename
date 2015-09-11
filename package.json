@@ -19,7 +19,7 @@
     "escape"
   ],
   "author": "Parsha Pourkhomami",
-  "license": "Public Domain",
+  "license": "WTFPL",
   "devDependencies": {
     "mktemp": "^0.4.0",
     "tape": "^3.5.0"
