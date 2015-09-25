@@ -22,6 +22,6 @@
   "license": "WTFPL OR ISC",
   "devDependencies": {
     "mktemp": "^0.4.0",
-    "tape": "^3.5.0"
+    "tape": "^4.2.0"
   }
 }
