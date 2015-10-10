@@ -1,3 +1,5 @@
+"use strict";
+
 var test = require("tape"),
   sanitize = require("./");
 
@@ -185,6 +187,13 @@ function testString(str, t) {
     "/..",
     "/../",
     "*.|.",
+    "./",
+    "./foobar",
+    "../foobar",
+    "../../foobar",
+    "./././foobar",
+    "|*.what",
+    "LPT9.asdf",
   ],
   blns
 ).forEach(function(str) {
