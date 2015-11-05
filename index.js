@@ -16,7 +16,7 @@
  *
  * Reserved filenames on Unix-based systems (".", "..")
  * Reserved filenames in Windows ("CON", "PRN", "AUX", "NUL", "COM1",
- * "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", 
+ * "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
  * "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", and
  * "LPT9") case-insesitively and with or without filename extensions.
  *
@@ -35,9 +35,42 @@ var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 
 // Truncate string by size in bytes
 function truncate(str, maxByteSize) {
-  var buffer = new Buffer(maxByteSize);
-  var written = buffer.write(str, "utf8");
-  return buffer.toString("utf8", 0, written);
+  var strLen = str.length,
+      curByteSize = 0,
+      codePoint = -1;
+
+  for(var i = 0; i < strLen; i++){
+    codePoint = str.charCodeAt(i);
+
+    // handle 4-byte non-BMP chars
+    // low surrogate
+    if (codePoint >= 0xdc00 && codePoint <= 0xdfff){
+      // when parsing previous hi-surrogate, 3 is added to curByteSize
+      curByteSize++;
+      if(curByteSize > maxByteSize){
+        return str.substring(0, i - 1);
+      }
+
+      continue;
+    }
+
+    if( codePoint <= 0x7f ) {
+      curByteSize++;
+    }
+    else if( codePoint >= 0x80 && codePoint <= 0x7ff ) {
+      curByteSize += 2;
+    }
+    else if( codePoint >= 0x800 && codePoint <= 0xffff ) {
+      curByteSize += 3;
+    }
+
+    if (curByteSize > maxByteSize){
+      return str.substring(0, i);
+    }
+  }
+
+  // never exceeds the upper limit
+  return str;
 }
 
 function sanitize(input, replacement) {
