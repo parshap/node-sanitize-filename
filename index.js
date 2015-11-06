@@ -28,50 +28,12 @@
  * @return {String}         Sanitized filename
  */
 
+var truncate = require("truncate-utf8-bytes");
+
 var illegalRe = /[\/\?<>\\:\*\|":]/g;
 var controlRe = /[\x00-\x1f\x80-\x9f]/g;
 var reservedRe = /^\.+$/;
 var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
-
-// Truncate string by size in bytes
-function truncate(str, maxByteSize) {
-  var strLen = str.length,
-      curByteSize = 0,
-      codePoint = -1;
-
-  for(var i = 0; i < strLen; i++){
-    codePoint = str.charCodeAt(i);
-
-    // handle 4-byte non-BMP chars
-    // low surrogate
-    if (codePoint >= 0xdc00 && codePoint <= 0xdfff){
-      // when parsing previous hi-surrogate, 3 is added to curByteSize
-      curByteSize++;
-      if(curByteSize > maxByteSize){
-        return str.substring(0, i - 1);
-      }
-
-      continue;
-    }
-
-    if( codePoint <= 0x7f ) {
-      curByteSize++;
-    }
-    else if( codePoint >= 0x80 && codePoint <= 0x7ff ) {
-      curByteSize += 2;
-    }
-    else if( codePoint >= 0x800 && codePoint <= 0xffff ) {
-      curByteSize += 3;
-    }
-
-    if (curByteSize > maxByteSize){
-      return str.substring(0, i);
-    }
-  }
-
-  // never exceeds the upper limit
-  return str;
-}
 
 function sanitize(input, replacement) {
   var sanitized = input

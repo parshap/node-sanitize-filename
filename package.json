@@ -23,5 +23,8 @@
   "devDependencies": {
     "mktemp": "^0.4.0",
     "tape": "^4.2.0"
+  },
+  "dependencies": {
+    "truncate-utf8-bytes": "^1.0.0"
   }
 }
