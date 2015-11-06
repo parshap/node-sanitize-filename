@@ -3,6 +3,10 @@
 var test = require("tape"),
   sanitize = require("./");
 
+function repeat(string, times) {
+  return new Array(times + 1).join(string);
+}
+
 var REPLACEMENT_OPTS = {
   replacement: "_",
 };
@@ -97,7 +101,7 @@ test("invalid replacement", function (t) {
 });
 
 test("255 characters max", function(t) {
-  var string = new Array(300).join("a");
+  var string = repeat("a", 300);
   t.ok(string.length > 255);
   t.ok(sanitize(string).length <= 255);
   t.end();
@@ -151,7 +155,7 @@ function testString(str, t) {
 
 [].concat(
   [
-    new Array(300).join("a"),
+    repeat("a", 300),
     "the quick brown fox jumped over the lazy dog",
     "résumé",
     "hello\u0000world",
@@ -213,24 +217,24 @@ test("remove temp directory", function(t) {
 //
 
 test("non-bmp SADDLES the limit", function(t){
-  var str25x = 'a'.repeat(252),
-      name = str25x + '\uD800\uDC00';
+  var str25x = repeat("a", 252),
+    name = str25x + '\uD800\uDC00';
   t.equal(sanitize(name), str25x);
 
   t.end();
 });
 
 test("non-bmp JUST WITHIN the limit", function(t){
-  var str25x = 'a'.repeat(251),
-      name = str25x + '\uD800\uDC00';
+  var str25x = repeat('a', 251),
+    name = str25x + '\uD800\uDC00';
   t.equal(sanitize(name), name);
 
   t.end();
 });
 
 test("non-bmp JUST OUTSIDE the limit", function(t){
-  var str25x = 'a'.repeat(253),
-      name = str25x + '\uD800\uDC00';
+  var str25x = repeat('a', 253),
+    name = str25x + '\uD800\uDC00';
   t.equal(sanitize(name), str25x);
 
   t.end();
