@@ -4,7 +4,9 @@
   "description": "Sanitize a string for use as a filename",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "tape test.js",
+    "test-browser": "zuul --local --open -- test.js",
+    "test-browser-sauce": "zuul -- test.js"
   },
   "repository": {
     "type": "git",
@@ -22,7 +24,8 @@
   "license": "WTFPL OR ISC",
   "devDependencies": {
     "mktemp": "^0.4.0",
-    "tape": "^4.2.2"
+    "tape": "^4.2.2",
+    "zuul": "^3.7.2"
   },
   "dependencies": {
     "truncate-utf8-bytes": "^1.0.0"

@@ -107,112 +107,6 @@ test("255 characters max", function(t) {
   t.end();
 });
 
-// Test writing files to the fs
-//
-
-var fs = require("fs");
-var path = require("path");
-var mktemp = require("mktemp");
-var tempdir = mktemp.createDirSync("sanitize-filename-test-XXXXXX");
-
-try {
-  var blns = require("./vendor/big-list-of-naughty-strings/blns.json");
-}
-catch (err) {
-  console.error("Error: Cannot load file './vendor/big-list-of-naughty-strings/blns.json'");
-  console.error();
-  console.error("Make sure you've initialized git submodules by running");
-  console.error();
-  console.error("    git submodule update --init");
-  console.error();
-  process.exit(1);
-}
-
-function testString(str, t) {
-  var sanitized = sanitize(str) || "default";
-  var filepath = path.join(tempdir, sanitized);
-
-  // Should not contain any directories or relative paths
-  t.equal(path.dirname(path.resolve("/abs/path", sanitized)), "/abs/path");
-
-  // Should be max 255 bytes
-  t.assert(Buffer.byteLength(sanitized) <= 255, "max 255 bytes");
-
-  // Should write and read file to disk
-  t.equal(path.dirname(path.normalize(filepath)), tempdir);
-  fs.writeFile(filepath, "foobar", function(err) {
-    t.ifError(err, "no error writing file");
-    fs.readFile(filepath, function(err, data) {
-      t.ifError(err, "no error reading file");
-      t.equal(data.toString(), "foobar", "file contents equals");
-      fs.unlink(filepath, function(err) {
-        t.ifError(err, "no error unlinking file");
-        t.end();
-      });
-    });
-  });
-}
-
-[].concat(
-  [
-    repeat("a", 300),
-    "the quick brown fox jumped over the lazy dog",
-    "résumé",
-    "hello\u0000world",
-    "hello\nworld",
-    "semi;colon.js",
-    ";leading-semi.js",
-    "slash\\.js",
-    "slash/.js",
-    "col:on.js",
-    "star*.js",
-    "question?.js",
-    "quote\".js",
-    "singlequote'.js",
-    "brack<e>ts.js",
-    "p|pes.js",
-    "plus+.js",
-    "'five and six<seven'.js",
-    " space at front",
-    "space at end ",
-    ".period",
-    "period.",
-    "relative/path/to/some/dir",
-    "/abs/path/to/some/dir",
-    "~/.\u0000notssh/authorized_keys",
-    "",
-    "h?w",
-    "h/w",
-    "h*w",
-    ".",
-    "..",
-    "./",
-    "../",
-    "/..",
-    "/../",
-    "*.|.",
-    "./",
-    "./foobar",
-    "../foobar",
-    "../../foobar",
-    "./././foobar",
-    "|*.what",
-    "LPT9.asdf",
-  ],
-  blns
-).forEach(function(str) {
-  test(JSON.stringify(str), function(t) {
-    testString(str, t);
-  });
-});
-
-test("remove temp directory", function(t) {
-  fs.rmdir(tempdir, function(err) {
-    t.ifError(err);
-    t.end();
-  });
-});
-
 // Test the handling of non-BMP chars in UTF-8
 //
 
@@ -239,3 +133,110 @@ test("non-bmp JUST OUTSIDE the limit", function(t){
 
   t.end();
 });
+
+function testStringUsingFS(str, t) {
+  var sanitized = sanitize(str) || "default";
+  var filepath = path.join(tempdir, sanitized);
+
+  // Should not contain any directories or relative paths
+  t.equal(path.dirname(path.resolve("/abs/path", sanitized)), "/abs/path");
+
+  // Should be max 255 bytes
+  t.assert(Buffer.byteLength(sanitized) <= 255, "max 255 bytes");
+
+  // Should write and read file to disk
+  t.equal(path.dirname(path.normalize(filepath)), tempdir);
+  fs.writeFile(filepath, "foobar", function(err) {
+    t.ifError(err, "no error writing file");
+    fs.readFile(filepath, function(err, data) {
+      t.ifError(err, "no error reading file");
+      t.equal(data.toString(), "foobar", "file contents equals");
+      fs.unlink(filepath, function(err) {
+        t.ifError(err, "no error unlinking file");
+        t.end();
+      });
+    });
+  });
+}
+
+// Don't run these tests in browser environments
+// Test writing files to the fs
+if ( ! process.browser) {
+  var fs = require("fs");
+  var path = require("path");
+  var mktemp = require("mktemp");
+  var tempdir = mktemp.createDirSync("sanitize-filename-test-XXXXXX");
+
+  try {
+    var blns = require("./vendor/big-list-of-naughty-strings/blns.json");
+  }
+  catch (err) {
+    console.error("Error: Cannot load file './vendor/big-list-of-naughty-strings/blns.json'");
+    console.error();
+    console.error("Make sure you've initialized git submodules by running");
+    console.error();
+    console.error("    git submodule update --init");
+    console.error();
+    process.exit(1);
+  }
+
+  [].concat(
+    [
+      repeat("a", 300),
+      "the quick brown fox jumped over the lazy dog",
+      "résumé",
+      "hello\u0000world",
+      "hello\nworld",
+      "semi;colon.js",
+      ";leading-semi.js",
+      "slash\\.js",
+      "slash/.js",
+      "col:on.js",
+      "star*.js",
+      "question?.js",
+      "quote\".js",
+      "singlequote'.js",
+      "brack<e>ts.js",
+      "p|pes.js",
+      "plus+.js",
+      "'five and six<seven'.js",
+      " space at front",
+      "space at end ",
+      ".period",
+      "period.",
+      "relative/path/to/some/dir",
+      "/abs/path/to/some/dir",
+      "~/.\u0000notssh/authorized_keys",
+      "",
+      "h?w",
+      "h/w",
+      "h*w",
+      ".",
+      "..",
+      "./",
+      "../",
+      "/..",
+      "/../",
+      "*.|.",
+      "./",
+      "./foobar",
+      "../foobar",
+      "../../foobar",
+      "./././foobar",
+      "|*.what",
+      "LPT9.asdf",
+    ],
+    blns
+  ).forEach(function(str) {
+    test(JSON.stringify(str), function(t) {
+      testStringUsingFS(str, t);
+    });
+  });
+
+  test("remove temp directory", function(t) {
+    fs.rmdir(tempdir, function(err) {
+      t.ifError(err);
+      t.end();
+    });
+  });
+}
