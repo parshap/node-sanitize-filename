@@ -160,8 +160,30 @@ function testStringUsingFS(str, t) {
 }
 
 // Don't run these tests in browser environments
-// Test writing files to the fs
 if ( ! process.browser) {
+  // ## Browserify Build
+  //
+  // Make sure Buffer is not used when building using browserify.
+  //
+
+  var browserify = require("browserify");
+  var concat = require("concat-stream");
+
+  test("browserify build", function(t) {
+    var bundle = browserify(__dirname).bundle();
+    bundle.on("error", t.ifError);
+    bundle.pipe(concat(function(data) {
+      var source = data.toString();
+      t.ok(source.indexOf("Buffer") === -1);
+      t.end();
+    }));
+  });
+
+  // ## Filesystem Tests
+  //
+  // Test writing files to the local filesystem.
+  //
+
   var fs = require("fs");
   var path = require("path");
   var mktemp = require("mktemp");
