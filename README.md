@@ -1,6 +1,4 @@
-# sanitize-filename
-
-[![build
+# sanitize-filename [![build
 status](https://secure.travis-ci.org/parshap/node-sanitize-filename.svg?branch=master)](http://travis-ci.org/parshap/node-sanitize-filename)
 
 Sanitize a string to be safe for use as a filename by removing directory
