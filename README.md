@@ -3,6 +3,14 @@
 Sanitize a string to be safe for use as a filename by removing directory
 paths and invalid characters.
 
+## Install
+
+[npm: *sanitize-filename*](https://www.npmjs.com/package/sanitize-filename)
+
+```
+npm install sanitize-filename
+```
+
 ## Example
 
 ```js
@@ -18,8 +26,7 @@ var filename = sanitize(UNSAFE_USER_INPUT);
 
 ## Details
 
-*sanitize-filename* works by searching the input string for the
-following and removes them.
+*sanitize-filename* removes the following:
 
  * [Control characters][] (`0x00-0x1f` and `0x80-0x9f`)
  * [Reserved characters][] (`/` `?` `<` `>` `\` `:` `*` `|` `"`)
@@ -32,46 +39,15 @@ following and removes them.
 [control characters]: https://en.wikipedia.org/wiki/C0_and_C1_control_codes
 [reserved characters]: https://kb.acronis.com/content/39790
 
-The return value is capped at [255 characters in length][255].
+The resulting string is truncated to [255 bytes in length][255]. The
+string will not contain any directory paths and will be safe to use as a
+filename.
 
 [255]: http://unix.stackexchange.com/questions/32795/what-is-the-maximum-allowed-filename-and-folder-size-with-ecryptfs
 
-This guarantees that the resulting string does not contain directory
-paths (no `/` or `\` characters) and is a valid filename.
+### Empty String `""` Result
 
-### File Systems
-
-The return value will be safe for use as a filename on modern Windows,
-OSX, and Unix file systems (`NTFS`, `ext`, etc.).
-
-[`FAT` 8.3 filenames][8.3] are not supported.
-
-[8.3]: https://en.wikipedia.org/wiki/8.3_filename
-
-#### Testing Your File System
-
-The test program will attempt to use various strings (including the [Big
-List of Naughty Strings][blns]) to create files in the working
-directory. Run `npm test` to run tests against your file system.
-
-[blns]: https://github.com/minimaxir/big-list-of-naughty-strings
-
-### Non-unique Filenames
-
-Note that two unique inputs can result in the same return value. For
-example:
-
-```js
-var sanitize = require("sanitize-filename");
-sanitize("file?")
-// -> "file"
-sanitize ("file*")
-// -> "file"
-```
-
-### Empty String `""` Return Value
-
-Note that the return value can be an empty string. For example:
+An empty string `""` can be returned. For example:
 
 ```js
 var sanitize = require("sanitize-filename");
@@ -80,16 +56,42 @@ sanitize("..")
 
 ```
 
+### Non-unique Filenames
+
+Two different inputs can return the same value. For example:
+
+```js
+var sanitize = require("sanitize-filename");
+sanitize("file?")
+// -> "file"
+sanitize ("*file*")
+// -> "file"
+```
+
+### File Systems
+
+Sanitized filenames will be safe for use on modern Windows, OS X, and
+Unix file systems (`NTFS`, `ext`, etc.).
+
+[`FAT` 8.3 filenames][8.3] are not supported.
+
+[8.3]: https://en.wikipedia.org/wiki/8.3_filename
+
+#### Test Your File System
+
+The test program will use various strings (including the [Big List of
+Naughty Strings][blns]) to create files in the working directory. Run
+`npm test` to run tests against your file system.
+
+[blns]: https://github.com/minimaxir/big-list-of-naughty-strings
+
 ## API
 
-### `sanitize(filename, [options])`
+### `sanitize(inputString, [options])`
 
-Sanitize the input string `filename` by removing or replacing invalid
-characters. `options.replacement` can be a string to replace characters
-with.
+Sanitize `inputString` by removing or replacing invalid characters.
 
-## Installation
+Options:
 
-```
-npm install sanitize-filename
-```
+ * `options.replacement`: A string to replace invalid characters with.
+   *Optional. Default: `""`.*
