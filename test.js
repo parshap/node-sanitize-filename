@@ -60,6 +60,14 @@ test("restricted codes", function(t) {
   t.end();
 });
 
+// https://msdn.microsoft.com/en-us/library/aa365247(v=vs.85).aspx
+test("restricted suffixes", function(t) {
+  ["mr.", "mr..", "mr ", "mr  "].forEach(function(name) {
+    t.equal(sanitize(name), "mr");
+  });
+  t.end();
+});
+
 test("relative paths", function(t) {
   [".", "..", "./", "../", "/..", "/../", "*.|."].forEach(function(name) {
     t.equal(sanitize(name), "");
