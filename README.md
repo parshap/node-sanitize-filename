@@ -28,16 +28,19 @@ var filename = sanitize(UNSAFE_USER_INPUT);
 
 *sanitize-filename* removes the following:
 
- * [Control characters][] (`0x00-0x1f` and `0x80-0x9f`)
- * [Reserved characters][] (`/` `?` `<` `>` `\` `:` `*` `|` `"`)
+ * [Control characters][] (`0x00`–`0x1f` and `0x80`–`0x9f`)
+ * [Reserved characters][] (`/`, `?`, `<`, `>`, `\`, `:`, `*`, `|`, and
+   `"`)
  * Unix reserved filenames (`.` and `..`)
- * Windows reserved filenames (`CON` `PRN` `AUX` `NUL` `COM1`
-   `COM2` `COM3` `COM4` `COM5` `COM6` `COM7` `COM8` `COM9`
-   `LPT1` `LPT2` `LPT3` `LPT4` `LPT5` `LPT6` `LPT7` `LPT8` and
+ * Trailing periods and spaces ([for Windows][windows trailing])
+ * Windows reserved filenames (`CON`, `PRN`, `AUX`, `NUL`, `COM1`,
+   `COM2`, `COM3`, `COM4`, `COM5`, `COM6`, `COM7`, `COM8`, `COM9`,
+   `LPT1`, `LPT2`, `LPT3`, `LPT4`, `LPT5`, `LPT6`, `LPT7`, `LPT8`, and
    `LPT9`)
 
 [control characters]: https://en.wikipedia.org/wiki/C0_and_C1_control_codes
 [reserved characters]: https://kb.acronis.com/content/39790
+[windows trailing]: https://msdn.microsoft.com/en-us/library/aa365247(v=vs.85).aspx#Naming_Conventions
 
 The resulting string is truncated to [255 bytes in length][255]. The
 string will not contain any directory paths and will be safe to use as a
