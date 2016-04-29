@@ -60,6 +60,14 @@ test("restricted codes", function(t) {
   t.end();
 });
 
+// https://msdn.microsoft.com/en-us/library/aa365247(v=vs.85).aspx
+test("restricted suffixes", function(t) {
+  ["mr.", "mr..", "mr ", "mr  "].forEach(function(name) {
+    t.equal(sanitize(name), "mr");
+  });
+  t.end();
+});
+
 test("relative paths", function(t) {
   [".", "..", "./", "../", "/..", "/../", "*.|."].forEach(function(name) {
     t.equal(sanitize(name), "");
@@ -139,7 +147,7 @@ function testStringUsingFS(str, t) {
   var filepath = path.join(tempdir, sanitized);
 
   // Should not contain any directories or relative paths
-  t.equal(path.dirname(path.resolve("/abs/path", sanitized)), "/abs/path");
+  t.equal(path.dirname(path.resolve("/abs/path", sanitized)), path.resolve("/abs/path"));
 
   // Should be max 255 bytes
   t.assert(Buffer.byteLength(sanitized) <= 255, "max 255 bytes");
