@@ -27,7 +27,7 @@
     "concat-stream": "^1.5.1",
     "mktemp": "^0.4.0",
     "tape": "^4.2.2",
-    "zuul": "^3.7.2"
+    "zuul": "^3.11.0"
   },
   "dependencies": {
     "truncate-utf8-bytes": "^1.0.0"
