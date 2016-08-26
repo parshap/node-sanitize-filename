@@ -108,6 +108,18 @@ test("invalid replacement", function (t) {
   t.end();
 });
 
+test("Reserved delimiter uri characters", function(t) {
+  t.equal(sanitize("test;"), "test");
+  t.equal(sanitize("test@"), "test");
+  t.equal(sanitize("test$"), "test");
+  t.equal(sanitize("test&"), "test");
+  t.equal(sanitize("test="), "test");
+  t.equal(sanitize("test+"), "test");
+  t.equal(sanitize("test,"), "test");
+  t.equal(sanitize("test;@$&=,+"), "test");
+  t.end();
+});
+
 test("255 characters max", function(t) {
   var string = repeat("a", 300);
   t.ok(string.length > 255);
