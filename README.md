@@ -1,3 +1,6 @@
+# About this fork
+Our asset manager needs to sanitize filenames that are compatible with url slugs. This fork adds a sanitizing extension that replaces url reserved characters.
+
 # sanitize-filename [![build status](https://secure.travis-ci.org/parshap/node-sanitize-filename.svg?branch=master)](http://travis-ci.org/parshap/node-sanitize-filename)
 
 Sanitize a string to be safe for use as a filename by removing directory
