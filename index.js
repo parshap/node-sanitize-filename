@@ -36,6 +36,7 @@ var reservedRe = /^\.+$/;
 var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 var windowsTrailingRe = /[\. ]+$/;
 var reservedUrlRe = /[&;@$=+,]/g;
+var allInOneRe = /^(?!.*[\. ]+$)(?!^(\.|\.\.|con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$)[^\?<>\\:\*\|"\;\@\$\&\=\+\,\/\x00-\x1f\x80-\x9f]{1,255}$/i;
 
 function sanitize(input, replacement) {
   var sanitized = input
@@ -55,4 +56,6 @@ module.exports = function (input, options) {
     return output;
   }
   return sanitize(output, '');
-};
+}
+
+module.exports.regularExpression = allInOneRe;

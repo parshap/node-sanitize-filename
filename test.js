@@ -281,4 +281,63 @@ if ( ! process.browser) {
       t.end();
     });
   });
+
+  test("Regular expression", function(t) {
+      let file_names = {
+        "the quick brown fox jumped over the lazy dog": true,
+        "résumé": true,
+        "s.o.s": true,
+        "singlequote'.js": true,
+        "test-1": true,
+        "hello\u0000world": false,
+        "hello\nworld": false,
+        "semi;colon.js": false,
+        ";leading-semi.js": false,
+        "slash\\.js": false,
+        "slash/.js": false,
+        "col:on.js": false,
+        "star*.js": false,
+        "question?.js": false,
+        "quote\".js": false,
+        "brack<e>ts.js": false,
+        "p|pes.js": false,
+        "plus+.js": false,
+        "'five and six<seven'.js": false,
+        " space at front": true,
+        "space at end ": false,
+        ".period": true,
+        "period.": false,
+        "test@mail.com": false,
+        "hello$world": false,
+        "oliv&tom": false,
+        "a=b": false,
+        "a+b": false,
+        "a,b": false,
+        "relative/path/to/some/dir": false,
+        "/abs/path/to/some/dir": false,
+        "~/.\u0000notssh/authorized_keys": false,
+        "": false,
+        "h?w": false,
+        "h/w": false,
+        "h*w": false,
+        ".": false,
+        "..": false,
+        "./": false,
+        "../": false,
+        "/..": false,
+        "/../": false,
+        "*.|.": false,
+        "./foobar": false,
+        "../foobar": false,
+        "../../foobar": false,
+        "./././foobar": false,
+        "|*.what": false,
+        "LPT9.asdf": false,
+        "com8": false,
+        "com88": true
+      };
+      let results = Object.keys(file_names).filter(name => sanitize.regularExpression.test(name) !== file_names[name]);
+      t.equal(results.length, 0);
+      t.end();
+  });
 }
