@@ -35,6 +35,7 @@ var controlRe = /[\x00-\x1f\x80-\x9f]/g;
 var reservedRe = /^\.+$/;
 var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 var windowsTrailingRe = /[\. ]+$/;
+var regexReservedRe = /[-\/\\^$*+?.()|[\]{}]/g;
 
 function sanitize(input, replacement) {
   var sanitized = input
@@ -46,9 +47,23 @@ function sanitize(input, replacement) {
   return truncate(sanitized, 255);
 }
 
+function replace(input, replacementMap) {
+  replacementMap.forEach(function (replacementPair) {
+    var regex = replacementPair[0];
+    var replacement = replacementPair[1];
+    if (typeof regex === 'string') {
+      regex = new RegExp(regex.replace(regexReservedRe, '\\$&'), 'g');
+    }
+
+    input = input.replace(regex, replacement);
+  });
+  return input;
+}
+
 module.exports = function (input, options) {
   var replacement = (options && options.replacement) || '';
-  var output = sanitize(input, replacement);
+  var replacementMap = (options && options.replacementMap) || [];
+  var output = sanitize(replace(input, replacementMap), replacement);
   if (replacement === '') {
     return output;
   }
