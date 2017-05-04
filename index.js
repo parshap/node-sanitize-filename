@@ -35,6 +35,8 @@ var controlRe = /[\x00-\x1f\x80-\x9f]/g;
 var reservedRe = /^\.+$/;
 var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 var windowsTrailingRe = /[\. ]+$/;
+var reservedUrlRe = /[&;@$=+,]/g;
+var allInOneRe = /^(?!.*[\. ]+$)(?!^(\.|\.\.|con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$)[^\?<>\\:\*\|"\;\@\$\&\=\+\,\/\x00-\x1f\x80-\x9f]{1,255}$/i;
 
 function sanitize(input, replacement) {
   var sanitized = input
@@ -42,7 +44,8 @@ function sanitize(input, replacement) {
     .replace(controlRe, replacement)
     .replace(reservedRe, replacement)
     .replace(windowsReservedRe, replacement)
-    .replace(windowsTrailingRe, replacement);
+    .replace(windowsTrailingRe, replacement)
+    .replace(reservedUrlRe, replacement);
   return truncate(sanitized, 255);
 }
 
@@ -53,4 +56,6 @@ module.exports = function (input, options) {
     return output;
   }
   return sanitize(output, '');
-};
+}
+
+module.exports.regularExpression = allInOneRe;
