@@ -26,7 +26,7 @@
     "truncate-utf8-bytes": "^1.0.0"
   },
   "devDependencies": {
-    "browserify": "^14.0.0",
+    "browserify": "^14.4.0",
     "concat-stream": "^1.5.1",
     "mktemp": "^0.4.0",
     "tape": "^4.2.2",
