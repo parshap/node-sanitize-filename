@@ -101,3 +101,8 @@ Options:
  a function, the function will be called with the invalid characters and it's
  return value will be used as the replacement. See [`String.prototype.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)
  for more info.
+ * `options.sanitizeWindows`: *optional, boolean, default: `true`*. If falsy,
+ Windows-reserved filenames and trailing periods or spaces will not be
+ sanitized.
+ * `options.truncate`: *optional, boolean, default: `true`*. If falsy,
+ resulting filenames will not be truncated to 255 bytes.

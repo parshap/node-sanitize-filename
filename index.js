@@ -36,21 +36,34 @@ var reservedRe = /^\.+$/;
 var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 var windowsTrailingRe = /[\. ]+$/;
 
-function sanitize(input, replacement) {
+var defaultOptions = {
+  replacement: '',
+  sanitizeWindows: true,
+  truncate: true
+}
+
+function sanitize(input, replacement, options) {
+  options = Object.assign({}, defaultOptions, options)
   var sanitized = input
     .replace(illegalRe, replacement)
     .replace(controlRe, replacement)
-    .replace(reservedRe, replacement)
-    .replace(windowsReservedRe, replacement)
-    .replace(windowsTrailingRe, replacement);
-  return truncate(sanitized, 255);
+    .replace(reservedRe, replacement);
+  if (options.sanitizeWindows) {
+    sanitized = sanitized
+      .replace(windowsReservedRe, replacement)
+      .replace(windowsTrailingRe, replacement);
+  }
+  if (options.truncate) {
+    return truncate(sanitized, 255);
+  }
+  return sanitized
 }
 
 module.exports = function (input, options) {
-  var replacement = (options && options.replacement) || '';
-  var output = sanitize(input, replacement);
+  var replacement = (options && options.replacement) || defaultOptions.replacement;
+  var output = sanitize(input, replacement, options);
   if (replacement === '') {
     return output;
   }
-  return sanitize(output, '');
+  return sanitize(output, '', options);
 };

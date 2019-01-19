@@ -11,6 +11,14 @@ var REPLACEMENT_OPTS = {
   replacement: "_",
 };
 
+var NO_WINDOWS_OPTS = {
+  sanitizeWindows: false
+}
+
+var NO_TRUNCATE_OPTS = {
+  truncate: false
+}
+
 test("valid names", function(t) {
   ["the quick brown fox jumped over the lazy dog.mp3",
     "résumé"].forEach(function(name) {
@@ -100,6 +108,16 @@ test("reserved filename in Windows with replacement", function(t) {
   t.end();
 });
 
+test("reserved filename in Windows with sanitizeWindows false", function(t) {
+  t.equal(sanitize("con", NO_WINDOWS_OPTS), "con");
+  t.equal(sanitize("COM1", NO_WINDOWS_OPTS), "COM1");
+  t.equal(sanitize("PRN.", NO_WINDOWS_OPTS), "PRN.");
+  t.equal(sanitize("aux.txt", NO_WINDOWS_OPTS), "aux.txt");
+  t.equal(sanitize("LPT9.asdfasdf", NO_WINDOWS_OPTS), "LPT9.asdfasdf");
+  t.equal(sanitize("LPT10.txt", NO_WINDOWS_OPTS), "LPT10.txt");
+  t.end();
+});
+
 test("invalid replacement", function (t) {
   t.equal(sanitize(".", { replacement: "."}), "");
   t.equal(sanitize("foo?.txt", { replacement: ">"}), "foo.txt");
@@ -112,6 +130,13 @@ test("255 characters max", function(t) {
   var string = repeat("a", 300);
   t.ok(string.length > 255);
   t.ok(sanitize(string).length <= 255);
+  t.end();
+});
+
+test("no character maximum with truncate false", function(t) {
+  var string = repeat("a", 300);
+  t.ok(string.length > 255);
+  t.ok(sanitize(string, NO_TRUNCATE_OPTS).length === 300);
   t.end();
 });
 
@@ -168,7 +193,7 @@ function testStringUsingFS(str, t) {
 }
 
 // Don't run these tests in browser environments
-if ( ! process.browser) {
+if (!process.browser && !process.argv.find(arg => arg === '--unit-only')) {
   // ## Browserify Build
   //
   // Make sure Buffer is not used when building using browserify.
