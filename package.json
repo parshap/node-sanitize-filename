@@ -19,6 +19,7 @@
   },
   "scripts": {
     "test": "tape test.js",
+    "test-unit": "tape test.js --unit-only",
     "test-browser": "zuul --local --open -- test.js",
     "test-browser-sauce": "zuul -- test.js"
   },
