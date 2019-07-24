@@ -37,6 +37,9 @@ var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 var windowsTrailingRe = /[\. ]+$/;
 
 function sanitize(input, replacement) {
+  if (typeof input !== 'string') {
+    input = input.toString();
+  }
   var sanitized = input
     .replace(illegalRe, replacement)
     .replace(controlRe, replacement)
