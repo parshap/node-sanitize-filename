@@ -142,6 +142,39 @@ test("non-bmp JUST OUTSIDE the limit", function(t){
   t.end();
 });
 
+// Test invalid input
+//
+
+test("invalid input", function(t) {
+  t.throws(function() {
+    sanitize();
+  }, null, 'no arguments');
+
+  [
+    undefined,
+    null,
+    false,
+    true,
+    {},
+    {
+      replace: function() {
+        return "foo";
+      },
+      toString: function() {
+        return "bar";
+      },
+    },
+    [],
+    new Buffer('asdf'),
+  ].forEach(function(input) {
+    t.throws(function() {
+      sanitize(input);
+    }, null, JSON.stringify(input));
+  });
+
+  t.end();
+});
+
 function testStringUsingFS(str, t) {
   var sanitized = sanitize(str) || "default";
   var filepath = path.join(tempdir, sanitized);
