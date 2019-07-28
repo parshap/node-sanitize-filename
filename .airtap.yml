@@ -1,10 +1,12 @@
-ui: tape
+loopback: airtap.local
 browsers:
   - name: chrome
     version: latest
   - name: firefox
     version: latest
   - name: ie
+    version: latest
+  - name: microsoftedge
     version: latest
   - name: safari
     version: latest
