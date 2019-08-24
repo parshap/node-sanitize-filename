@@ -1,5 +1,6 @@
-declare var Sanitize: {
-  sanitize(input: string, options?: { replacement?: string }): string;
-};
+declare function sanitize(
+  input: string,
+  options?: { replacement?: string }
+): string;
 
-export = Sanitize;
+export = sanitize;
