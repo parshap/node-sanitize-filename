@@ -13,6 +13,7 @@
   "license": "WTFPL OR ISC",
   "author": "Parsha Pourkhomami",
   "main": "index.js",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git@github.com:parshap/node-sanitize-filename.git"
