@@ -24,7 +24,7 @@
  * http://unix.stackexchange.com/questions/32795/what-is-the-maximum-allowed-filename-and-folder-size-with-ecryptfs
  *
  * @param  {String} input   Original filename
- * @param  {Object} options {replacement: String}
+ * @param  {Object} options {replacement: String | Function }
  * @return {String}         Sanitized filename
  */
 
