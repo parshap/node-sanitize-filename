@@ -5,4 +5,6 @@ declare function sanitize(
   }
 ): string;
 
+declare namespace sanitize { }
+
 export = sanitize;
