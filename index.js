@@ -5,7 +5,7 @@
  * Replaces characters in strings that are illegal/unsafe for filenames.
  * Unsafe characters are either removed or replaced by a substitute set
  * in the optional `options` object.
- * Additionally, more invalid characters can be passed using `invalid` attribute of the optional `options` object.
+ * Additionally, more invalid characters can be passed using `additionalInvalids` attribute of the optional `options` object.
  *
  * Illegal Characters on Various Operating Systems
  * / ? < > \ : * | "
@@ -67,7 +67,7 @@ function sanitize(input, replacement, invalids) {
 
 module.exports = function (input, options) {
   var replacement = (options && options.replacement) || '';
-  var invalids = (options && options.invalid) || [];
+  var invalids = (options && options.additionalInvalids) || [];
   var output = sanitize(input, replacement, invalids);
   if (replacement === '') {
     return output;
