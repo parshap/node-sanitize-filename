@@ -137,14 +137,18 @@ test("additional invalids with replacement", function(t) {
 
 test("replacement part of additional invalids", function(t) {
   ["h'w", "h w", "h_w"].forEach(function(name) {
-    t.equal(sanitize(name, INVALID_AS_REPLACEMENT_OPTS), "hw");
+    t.throws(function() {
+      sanitize(name, INVALID_AS_REPLACEMENT_OPTS);
+    }, null, 'replacement part of options.invalid');
   });
   t.end();
 });
 
 test("empty string as additional invalid", function(t) {
   ["hw", "h w", "h_w"].forEach(function(name) {
-    t.equal(sanitize(name, INVALID_EMPTY_STRING), name);
+    t.throws(function() {
+      sanitize(name, INVALID_AS_REPLACEMENT_OPTS);
+    }, null, 'empty string is default replacement and part of options.invalid');
   });
   t.end();
 });
@@ -165,6 +169,20 @@ test("mix of invalid and non-invalid as additional invalid", function(t) {
 
 test("words as additional invalids", function(t) {
   ["xtestx", "x, ,x"].forEach(function(name) {
+    t.equal(sanitize(name, INVALID_WHOLE_WORDS), "xx");
+  });
+  t.end();
+});
+
+test("words as additional invalids multiple times", function(t) {
+  ["xtestxtest", ", ,, ,x, ,x"].forEach(function(name) {
+    t.equal(sanitize(name, INVALID_WHOLE_WORDS), "xx");
+  });
+  t.end();
+});
+
+test("words as additional invalids nested", function(t) {
+  ["xteteststx", "x,, , , ,,x"].forEach(function(name) {
     t.equal(sanitize(name, INVALID_WHOLE_WORDS), "xx");
   });
   t.end();
