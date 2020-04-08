@@ -61,7 +61,7 @@ module.exports = function (input, options) {
   if (replacement === '') {
     return output;
   }
-  if (invalids.indexOf(replacement) !== -1) {
+  if (typeof replacement === 'string' && invalids.indexOf(replacement) !== -1) {
     return sanitize(output, '', invalids);
   }
   return sanitize(output, '', []);
