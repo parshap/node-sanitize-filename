@@ -121,7 +121,7 @@ test("additional invalids", function(t) {
   t.end();
 });
 
-test("additional invalid multiple times", function(t) {
+test("additional invalids multiple times", function(t) {
   [" h w ", "'h'w'", "'h w'"].forEach(function(name) {
     t.equal(sanitize(name, INVALID_OPTS), "hw");
   });
@@ -139,7 +139,7 @@ test("replacement part of additional invalids", function(t) {
   ["h'w", "h w", "h_w"].forEach(function(name) {
     t.throws(function() {
       sanitize(name, INVALID_AS_REPLACEMENT_OPTS);
-    }, null, 'replacement part of options.invalid');
+    }, null, 'replacement part of options.additionalInvalids');
   });
   t.end();
 });
@@ -148,7 +148,7 @@ test("empty string as additional invalid", function(t) {
   ["hw", "h w", "h_w"].forEach(function(name) {
     t.throws(function() {
       sanitize(name, INVALID_AS_REPLACEMENT_OPTS);
-    }, null, 'empty string is default replacement and part of options.invalid');
+    }, null, 'empty string is default replacement and part of options.additionalInvalids');
   });
   t.end();
 });
