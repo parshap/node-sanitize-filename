@@ -96,8 +96,11 @@ Sanitize `inputString` by removing or replacing invalid characters.
 
 Options:
 
- * `options.replacement`: *optional, string/function, default: `""`*. If passed
+* `options.replacement`: *optional, string/function, default: `""`*. If passed
  as a string, it's used as the replacement for invalid characters. If passed as
  a function, the function will be called with the invalid characters and it's
  return value will be used as the replacement. See [`String.prototype.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)
  for more info.
+* `options.invalid`: *optional, array of strings, default:* `[]`  
+  Any additional strings or characters that should be considered invalid and be replaced. This will not override the default invalid characters, only specify additional ones.  
+  If a string containing a mix of valid and invalid characters is supplied, all occurences of the whole string will be replaced.
