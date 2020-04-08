@@ -25,6 +25,22 @@ const INVALID_AS_REPLACEMENT_OPTS = {
   invalid: [`'`, ` `, `_`],
 }
 
+const INVALID_EMPTY_STRING = {
+  invalid: [``],
+}
+
+const INVALID_WHOLE_WORDS = {
+  invalid: [`test`, `hello`, `, ,`],
+}
+
+const INVALID_ALREADY_INVALID = {
+  invalid: [`<`, `|`, ` `],
+}
+
+const INVALID_MIX_INVALID_NON_INVALID = {
+  invalid: [`<test>`, `te st`],
+}
+
 test("valid names", function(t) {
   ["the quick brown fox jumped over the lazy dog.mp3",
     "résumé"].forEach(function(name) {
@@ -105,6 +121,13 @@ test("additional invalids", function(t) {
   t.end();
 });
 
+test("additional invalid multiple times", function(t) {
+  [" h w ", "'h'w'", "'h w'"].forEach(function(name) {
+    t.equal(sanitize(name, INVALID_OPTS), "hw");
+  });
+  t.end();
+});
+
 test("additional invalids with replacement", function(t) {
   ["h'w", "h w"].forEach(function(name) {
     t.equal(sanitize(name, INVALID_AND_REPLACEMENT_OPTS), "h_w");
@@ -116,6 +139,40 @@ test("replacement part of additional invalids", function(t) {
   ["h'w", "h w", "h_w"].forEach(function(name) {
     t.equal(sanitize(name, INVALID_AS_REPLACEMENT_OPTS), "hw");
   });
+  t.end();
+});
+
+test("empty string as additional invalid", function(t) {
+  ["hw", "h w", "h_w"].forEach(function(name) {
+    t.equal(sanitize(name, INVALID_EMPTY_STRING), name);
+  });
+  t.end();
+});
+
+test("already invalid as additional invalid", function(t) {
+  ["h<w<", "h|w", "h w"].forEach(function(name) {
+    t.equal(sanitize(name, INVALID_ALREADY_INVALID), "hw");
+  });
+  t.end();
+});
+
+test("mix of invalid and non-invalid as additional invalid", function(t) {
+  ["h<test>w", "hte stw"].forEach(function(name) {
+    t.equal(sanitize(name, INVALID_MIX_INVALID_NON_INVALID), "hw");
+  });
+  t.end();
+});
+
+test("words as additional invalids", function(t) {
+  ["xtestx", "x, ,x"].forEach(function(name) {
+    t.equal(sanitize(name, INVALID_WHOLE_WORDS), "xx");
+  });
+  t.end();
+});
+
+test("words as additional invalids two-in-one", function(t) {
+  t.equal(sanitize("xtestestx", INVALID_WHOLE_WORDS), "xestx");
+  t.equal(sanitize("x, , ,x", INVALID_WHOLE_WORDS), "x ,x");
   t.end();
 });
 
@@ -259,6 +316,31 @@ function testStringUsingFS(str, t) {
   });
 }
 
+function testStringUsingFSAdditionalInvalids(str, t) {
+  var sanitized = sanitize(str, {invalid: [` `, `'`, `,`, `test`, `😍`]}) || "default";
+  var filepath = path.join(tempdir, sanitized);
+
+  // Should not contain any directories or relative paths
+  t.equal(path.dirname(path.resolve("/abs/path", sanitized)), path.resolve("/abs/path"));
+
+  // Should be max 255 bytes
+  t.assert(Buffer.byteLength(sanitized) <= 255, "max 255 bytes");
+
+  // Should write and read file to disk
+  t.equal(path.dirname(path.normalize(filepath)), tempdir);
+  fs.writeFile(filepath, "foobar", function(err) {
+    t.ifError(err, "no error writing file");
+    fs.readFile(filepath, function(err, data) {
+      t.ifError(err, "no error reading file");
+      t.equal(data.toString(), "foobar", "file contents equals");
+      fs.unlink(filepath, function(err) {
+        t.ifError(err, "no error unlinking file");
+        t.end();
+      });
+    });
+  });
+}
+
 // Don't run these tests in browser environments
 if ( ! process.browser) {
   // ## Browserify Build
@@ -352,6 +434,9 @@ if ( ! process.browser) {
   ).forEach(function(str) {
     test(JSON.stringify(str), function(t) {
       testStringUsingFS(str, t);
+    });
+    test(JSON.stringify(str), function(t) {
+      testStringUsingFSAdditionalInvalids(str, t);
     });
   });
 
