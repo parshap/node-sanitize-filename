@@ -5,6 +5,7 @@
  * Replaces characters in strings that are illegal/unsafe for filenames.
  * Unsafe characters are either removed or replaced by a substitute set
  * in the optional `options` object.
+ * Additionally, more invalid characters can be passed using `invalid` attribute of the optional `options` object.
  *
  * Illegal Characters on Various Operating Systems
  * / ? < > \ : * | "
@@ -24,7 +25,7 @@
  * http://unix.stackexchange.com/questions/32795/what-is-the-maximum-allowed-filename-and-folder-size-with-ecryptfs
  *
  * @param  {String} input   Original filename
- * @param  {Object} options {replacement: String | Function }
+ * @param  {Object} options {replacement: String | Function, invalid: String[] }
  * @return {String}         Sanitized filename
  */
 
