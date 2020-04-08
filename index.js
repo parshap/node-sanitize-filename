@@ -41,15 +41,16 @@ function sanitize(input, replacement, invalids) {
   if (typeof input !== 'string') {
     throw new Error('Input must be string');
   }
-  var sanitized = input
+  var sanitized = input;
+  for (const invalid of invalids) {
+    sanitized = sanitized.replace(new RegExp(invalid, 'g'), replacement);
+  }
+  sanitized = sanitized
     .replace(illegalRe, replacement)
     .replace(controlRe, replacement)
     .replace(reservedRe, replacement)
     .replace(windowsReservedRe, replacement)
     .replace(windowsTrailingRe, replacement);
-  for (const invalid of invalids) {
-    sanitized = sanitized.replace(new RegExp(invalid, 'g'), replacement);
-  }
   return truncate(sanitized, 255);
 }
 
