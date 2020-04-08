@@ -36,7 +36,7 @@ var reservedRe = /^\.+$/;
 var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 var windowsTrailingRe = /[\. ]+$/;
 
-function sanitize(input, replacement) {
+function sanitize(input, replacement, invalids) {
   if (typeof input !== 'string') {
     throw new Error('Input must be string');
   }
@@ -46,14 +46,21 @@ function sanitize(input, replacement) {
     .replace(reservedRe, replacement)
     .replace(windowsReservedRe, replacement)
     .replace(windowsTrailingRe, replacement);
+  for (const invalid of invalids) {
+    sanitized = sanitized.replace(new RegExp(invalid, 'g'), replacement);
+  }
   return truncate(sanitized, 255);
 }
 
 module.exports = function (input, options) {
   var replacement = (options && options.replacement) || '';
-  var output = sanitize(input, replacement);
+  var invalids = (options && options.invalid) || [];
+  var output = sanitize(input, replacement, invalids);
   if (replacement === '') {
     return output;
   }
-  return sanitize(output, '');
+  if (invalids.indexOf(replacement) !== -1) {
+    return sanitize(output, '', invalids);
+  }
+  return sanitize(output, '', []);
 };

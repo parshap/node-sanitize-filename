@@ -11,6 +11,20 @@ var REPLACEMENT_OPTS = {
   replacement: "_",
 };
 
+const INVALID_OPTS = {
+  invalid: [`'`, ` `],
+}
+
+const INVALID_AND_REPLACEMENT_OPTS = {
+  replacement: "_",
+  invalid: [`'`, ` `],
+}
+
+const INVALID_AS_REPLACEMENT_OPTS = {
+  replacement: "_",
+  invalid: [`'`, ` `, `_`],
+}
+
 test("valid names", function(t) {
   ["the quick brown fox jumped over the lazy dog.mp3",
     "résumé"].forEach(function(name) {
@@ -26,6 +40,13 @@ test("valid names", function(t) {
   t.end();
 });
 
+test("valid names", function(t) {
+  ["valid-name.mp3", "résumé"].forEach(function(name) {
+    t.equal(sanitize(name, INVALID_OPTS), name);
+  });
+  t.end();
+});
+
 test("null character", function(t) {
   t.equal(sanitize("hello\u0000world"), "helloworld");
   t.end();
@@ -33,6 +54,11 @@ test("null character", function(t) {
 
 test("null character", function(t) {
   t.equal(sanitize("hello\u0000world", REPLACEMENT_OPTS), "hello_world");
+  t.end();
+});
+
+test("null character", function(t) {
+  t.equal(sanitize("hello\u0000world", INVALID_OPTS), "helloworld");
   t.end();
 });
 
@@ -46,6 +72,11 @@ test("control characters", function(t) {
   t.end();
 });
 
+test("control characters", function(t) {
+  t.equal(sanitize("hello\nworld", INVALID_OPTS), "helloworld");
+  t.end();
+});
+
 test("restricted codes", function(t) {
   ["h?w", "h/w", "h*w"].forEach(function(name) {
     t.equal(sanitize(name), "hw");
@@ -56,6 +87,34 @@ test("restricted codes", function(t) {
 test("restricted codes", function(t) {
   ["h?w", "h/w", "h*w"].forEach(function(name) {
     t.equal(sanitize(name, REPLACEMENT_OPTS), "h_w");
+  });
+  t.end();
+});
+
+test("restricted codes", function(t) {
+  ["h?w", "h/w", "h*w"].forEach(function(name) {
+    t.equal(sanitize(name, INVALID_OPTS), "hw");
+  });
+  t.end();
+});
+
+test("additional invalids", function(t) {
+  ["h'w", "h w"].forEach(function(name) {
+    t.equal(sanitize(name, INVALID_OPTS), "hw");
+  });
+  t.end();
+});
+
+test("additional invalids with replacement", function(t) {
+  ["h'w", "h w"].forEach(function(name) {
+    t.equal(sanitize(name, INVALID_AND_REPLACEMENT_OPTS), "h_w");
+  });
+  t.end();
+});
+
+test("replacement part of additional invalids", function(t) {
+  ["h'w", "h w", "h_w"].forEach(function(name) {
+    t.equal(sanitize(name, INVALID_AS_REPLACEMENT_OPTS), "hw");
   });
   t.end();
 });
