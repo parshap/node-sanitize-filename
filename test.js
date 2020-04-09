@@ -12,33 +12,33 @@ var REPLACEMENT_OPTS = {
 };
 
 const INVALID_OPTS = {
-  additionalInvalids: [`'`, ` `],
+  additionalInvalidStrings: [`'`, ` `],
 }
 
 const INVALID_AND_REPLACEMENT_OPTS = {
   replacement: "_",
-  additionalInvalids: [`'`, ` `],
+  additionalInvalidStrings: [`'`, ` `],
 }
 
 const INVALID_AS_REPLACEMENT_OPTS = {
   replacement: "_",
-  additionalInvalids: [`'`, ` `, `_`],
+  additionalInvalidStrings: [`'`, ` `, `_`],
 }
 
 const INVALID_EMPTY_STRING = {
-  additionalInvalids: [``],
+  additionalInvalidStrings: [``],
 }
 
 const INVALID_WHOLE_WORDS = {
-  additionalInvalids: [`test`, `hello`, `, ,`],
+  additionalInvalidStrings: [`test`, `hello`, `, ,`],
 }
 
 const INVALID_ALREADY_INVALID = {
-  additionalInvalids: [`<`, `|`, ` `],
+  additionalInvalidStrings: [`<`, `|`, ` `],
 }
 
 const INVALID_MIX_INVALID_NON_INVALID = {
-  additionalInvalids: [`<test>`, `te st`],
+  additionalInvalidStrings: [`<test>`, `te st`],
 }
 
 test("valid names", function(t) {
@@ -139,7 +139,7 @@ test("replacement part of additional invalids", function(t) {
   ["h'w", "h w", "h_w"].forEach(function(name) {
     t.throws(function() {
       sanitize(name, INVALID_AS_REPLACEMENT_OPTS);
-    }, null, 'replacement part of options.additionalInvalids');
+    }, null, 'replacement part of options.additionalInvalidStrings');
   });
   t.end();
 });
@@ -148,7 +148,7 @@ test("empty string as additional invalid", function(t) {
   ["hw", "h w", "h_w"].forEach(function(name) {
     t.throws(function() {
       sanitize(name, INVALID_AS_REPLACEMENT_OPTS);
-    }, null, 'empty string is default replacement and part of options.additionalInvalids');
+    }, null, 'empty string is default replacement and part of options.additionalInvalidStrings');
   });
   t.end();
 });
@@ -334,8 +334,8 @@ function testStringUsingFS(str, t) {
   });
 }
 
-function testStringUsingFSAdditionalInvalids(str, t) {
-  var sanitized = sanitize(str, {additionalInvalids: [` `, `'`, `,`, `test`, `😍`]}) || "default";
+function testStringUsingFSadditionalInvalidStrings(str, t) {
+  var sanitized = sanitize(str, {additionalInvalidStrings: [` `, `'`, `,`, `test`, `😍`]}) || "default";
   var filepath = path.join(tempdir, sanitized);
 
   // Should not contain any directories or relative paths
@@ -454,7 +454,7 @@ if ( ! process.browser) {
       testStringUsingFS(str, t);
     });
     test(JSON.stringify(str), function(t) {
-      testStringUsingFSAdditionalInvalids(str, t);
+      testStringUsingFSadditionalInvalidStrings(str, t);
     });
   });
 
