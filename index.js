@@ -55,8 +55,8 @@ function sanitize(input, replacement, invalids) {
     throw new Error("The replacement string can't be part of options.additionalInvalidStrings or contain substrings which are part of options.additionalInvalidStrings!");
   }
   var sanitized = input;
+  var counter = 0;
   while (containsInvalids(sanitized, invalids)) {
-    var counter = 0;
     for (var i = 0; i < invalids.length; i++) {
       sanitized = sanitized.split(invalids[i]).join(replacement);
     }
