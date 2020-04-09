@@ -11,33 +11,29 @@ var REPLACEMENT_OPTS = {
   replacement: "_",
 };
 
-const INVALID_OPTS = {
+var INVALID_OPTS = {
   additionalInvalidStrings: [`'`, ` `],
 }
 
-const INVALID_AND_REPLACEMENT_OPTS = {
+var INVALID_AND_REPLACEMENT_OPTS = {
   replacement: "_",
   additionalInvalidStrings: [`'`, ` `],
 }
 
-const INVALID_AS_REPLACEMENT_OPTS = {
+var INVALID_AS_REPLACEMENT_OPTS = {
   replacement: "_",
   additionalInvalidStrings: [`'`, ` `, `_`],
 }
 
-const INVALID_EMPTY_STRING = {
-  additionalInvalidStrings: [``],
-}
-
-const INVALID_WHOLE_WORDS = {
+var INVALID_WHOLE_WORDS = {
   additionalInvalidStrings: [`test`, `hello`, `, ,`],
 }
 
-const INVALID_ALREADY_INVALID = {
+var INVALID_ALREADY_INVALID = {
   additionalInvalidStrings: [`<`, `|`, ` `],
 }
 
-const INVALID_MIX_INVALID_NON_INVALID = {
+var INVALID_MIX_INVALID_NON_INVALID = {
   additionalInvalidStrings: [`<test>`, `te st`],
 }
 
