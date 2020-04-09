@@ -37,6 +37,13 @@ var INVALID_MIX_INVALID_NON_INVALID = {
   additionalInvalidStrings: ["<test>", "te st"],
 }
 
+var IILEGAL_REPLACEMENT_FUNCTION = {
+  replacement: function(x) {
+    return x;
+  },
+  additionalInvalidStrings: [",", "'"],
+}
+
 test("valid names", function(t) {
   ["the quick brown fox jumped over the lazy dog.mp3",
     "résumé"].forEach(function(name) {
@@ -145,6 +152,15 @@ test("empty string as additional invalid", function(t) {
     t.throws(function() {
       sanitize(name, INVALID_AS_REPLACEMENT_OPTS);
     }, null, 'empty string is default replacement and part of options.additionalInvalidStrings');
+  });
+  t.end();
+});
+
+test("illegal replacement function", function(t) {
+  ["h,w", "h'w"].forEach(function(name) {
+    t.throws(function() {
+      sanitize(name, IILEGAL_REPLACEMENT_FUNCTION);
+    }, null, 'the replacement function returns an invalid character');
   });
   t.end();
 });
