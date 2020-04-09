@@ -39,12 +39,11 @@ var windowsTrailingRe = /[\. ]+$/;
 
 function containsInvalids(input, invalids) {
   for (var i = 0; i < invalids.length; i++) {
-    if (input.includes(invalids[i])) {
+    if (input.indexOf(invalids[i]) !== -1) {
       return true;
     }
   }
   return false;
-  // invalids.some(invalid => sanitized.includes(invalid))
 }
 
 function sanitize(input, replacement, invalids) {
