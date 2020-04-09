@@ -37,6 +37,16 @@ var reservedRe = /^\.+$/;
 var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 var windowsTrailingRe = /[\. ]+$/;
 
+function containsInvalids(input, invalids) {
+  for (var invalid of invalids) {
+    if (input.includes(invalid)) {
+      return true;
+    }
+  }
+  return false;
+  // invalids.some(invalid => sanitized.includes(invalid))
+}
+
 function sanitize(input, replacement, invalids) {
   if (typeof input !== 'string') {
     throw new Error('Input must be string');
@@ -45,9 +55,9 @@ function sanitize(input, replacement, invalids) {
     throw new Error(`The replacement string can't be part of options.additionalInvalids or contain substrings which are part of options.additionalInvalids!`);
   }
   var sanitized = input;
-  while (invalids.some(invalid => sanitized.includes(invalid))) {
-    let counter = 0;
-    for (const invalid of invalids) {
+  while (containsInvalids(sanitized, invalids)) {
+    var counter = 0;
+    for (var invalid of invalids) {
       sanitized = sanitized.split(invalid).join(replacement);
     }
     if (counter > 1000) {
