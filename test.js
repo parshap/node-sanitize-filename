@@ -12,29 +12,29 @@ var REPLACEMENT_OPTS = {
 };
 
 var INVALID_OPTS = {
-  additionalInvalidStrings: [`'`, ` `],
+  additionalInvalidStrings: ["'", " "],
 }
 
 var INVALID_AND_REPLACEMENT_OPTS = {
   replacement: "_",
-  additionalInvalidStrings: [`'`, ` `],
+  additionalInvalidStrings: ["'", " "],
 }
 
 var INVALID_AS_REPLACEMENT_OPTS = {
   replacement: "_",
-  additionalInvalidStrings: [`'`, ` `, `_`],
+  additionalInvalidStrings: ["'", " ", "_"],
 }
 
 var INVALID_WHOLE_WORDS = {
-  additionalInvalidStrings: [`test`, `hello`, `, ,`],
+  additionalInvalidStrings: ["test", "hello", ", ,"],
 }
 
 var INVALID_ALREADY_INVALID = {
-  additionalInvalidStrings: [`<`, `|`, ` `],
+  additionalInvalidStrings: ["<", "|", " "],
 }
 
 var INVALID_MIX_INVALID_NON_INVALID = {
-  additionalInvalidStrings: [`<test>`, `te st`],
+  additionalInvalidStrings: ["<test>", "te st"],
 }
 
 test("valid names", function(t) {
@@ -331,7 +331,7 @@ function testStringUsingFS(str, t) {
 }
 
 function testStringUsingFSadditionalInvalidStrings(str, t) {
-  var sanitized = sanitize(str, {additionalInvalidStrings: [` `, `'`, `,`, `test`, `😍`]}) || "default";
+  var sanitized = sanitize(str, {additionalInvalidStrings: [" ", "'", ",", "test", "😍"]}) || "default";
   var filepath = path.join(tempdir, sanitized);
 
   // Should not contain any directories or relative paths
