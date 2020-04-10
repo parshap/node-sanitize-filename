@@ -50,6 +50,9 @@ function sanitize(input, replacement, invalids) {
   if (typeof input !== 'string') {
     throw new Error('Input must be string');
   }
+  if (!(typeof replacement === 'string' || typeof replacement === 'function')) {
+    throw new Error("Replacement must be a string or a function returning a string!");
+  }
   if (typeof replacement === 'string' && invalids.indexOf(replacement) !== -1) {
     throw new Error("The replacement string can't be part of options.additionalInvalidStrings or contain substrings which are part of options.additionalInvalidStrings!");
   }
@@ -57,7 +60,7 @@ function sanitize(input, replacement, invalids) {
   var counter = 0;
   while (containsInvalids(sanitized, invalids)) {
     for (var i = 0; i < invalids.length; i++) {
-      if (typeof replacement !== 'string') {
+      if (typeof replacement === 'function') {
         var tempReplacement = replacement(invalids[i]);
         sanitized = sanitized.split(invalids[i]).join(tempReplacement);
       } else {
