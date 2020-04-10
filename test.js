@@ -11,6 +11,19 @@ var REPLACEMENT_OPTS = {
   replacement: "_",
 };
 
+var REPLACEMENT_FUNCTION = {
+  replacement: function(invalid) {
+    return invalid.length;
+  },
+};
+
+var REPLACEMENT_FUNCTION_WITH_INVALIDS = {
+  replacement: function(invalid) {
+    return invalid.length;
+  },
+  additionalInvalidStrings: ["'", " "],
+};
+
 var INVALID_OPTS = {
   additionalInvalidStrings: ["'", " "],
 }
@@ -52,16 +65,30 @@ test("valid names", function(t) {
   t.end();
 });
 
-test("valid names", function(t) {
+test("valid names with replacement", function(t) {
   ["valid name.mp3", "résumé"].forEach(function(name) {
     t.equal(sanitize(name, REPLACEMENT_OPTS), name);
   });
   t.end();
 });
 
-test("valid names", function(t) {
+test("valid names with additional invalid", function(t) {
   ["valid-name.mp3", "résumé"].forEach(function(name) {
     t.equal(sanitize(name, INVALID_OPTS), name);
+  });
+  t.end();
+});
+
+test("invalid names with replacement function", function(t) {
+  ["te|st", "te/st"].forEach(function(name) {
+    t.equal(sanitize(name, REPLACEMENT_FUNCTION), "te1st");
+  });
+  t.end();
+});
+
+test("invalid names with replacement function and additional invalids", function(t) {
+  ["te|st", "te/st", "te'st", "te st"].forEach(function(name) {
+    t.equal(sanitize(name, REPLACEMENT_FUNCTION_WITH_INVALIDS), "te1st");
   });
   t.end();
 });
@@ -316,6 +343,33 @@ test("invalid input", function(t) {
     t.throws(function() {
       sanitize(input);
     }, null, JSON.stringify(input));
+  });
+
+  t.end();
+});
+
+test("invalid replacement", function(t) {
+  [
+    // the commented ones are legal, because they will all be replaced with the default replacement
+    // undefined,
+    // null,
+    // false,
+    true,
+    {},
+    {
+      replace: function() {
+        return "foo";
+      },
+      toString: function() {
+        return "bar";
+      },
+    },
+    [],
+    new Buffer('asdf'),
+  ].forEach(function(replacement) {
+    t.throws(function() {
+      sanitize('test', {replacement: replacement});
+    }, null, 'Illegal replacement:'+JSON.stringify(replacement));
   });
 
   t.end();
