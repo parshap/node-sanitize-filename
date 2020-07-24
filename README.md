@@ -101,3 +101,11 @@ Options:
  a function, the function will be called with the invalid characters and it's
  return value will be used as the replacement. See [`String.prototype.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)
  for more info.
+
+ * `options.truncate`: *optional, number/function, default: `255`*. If passed
+ as a number, it's used as the length in truncate call to reduce file name to desired length. 
+ If passed as a function, the function will be called with the filename and it's
+ return value will be used as the final output value out of sanitize.
+ If truncate callback function is specified AND `options.replacement` is non-default,
+ then the truncate callback function will be called twice - once during replacement
+ (but before sanitization), and once during sanitization.
