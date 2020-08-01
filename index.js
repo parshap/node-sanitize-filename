@@ -5,6 +5,10 @@
  * Replaces characters in strings that are illegal/unsafe for filenames.
  * Unsafe characters are either removed or replaced by a substitute set
  * in the optional `options` object.
+ * 
+ * Additionally, you can pass alternative truncation length (default: 255) 
+ * or function (default: `require("truncate-utf8-bytes")`),
+ * via the `truncate` attribute of the optional `options` object.
  *
  * Illegal Characters on Various Operating Systems
  * / ? < > \ : * | "
@@ -24,11 +28,12 @@
  * http://unix.stackexchange.com/questions/32795/what-is-the-maximum-allowed-filename-and-folder-size-with-ecryptfs
  *
  * @param  {String} input   Original filename
- * @param  {Object} options {replacement: String | Function }
+ * @param  {Object} options {replacement: String | Function, truncate: String | Function}
  * @return {String}         Sanitized filename
  */
 
 var truncate = require("truncate-utf8-bytes");
+var extname = require("path").extname;
 
 var illegalRe = /[\/\?<>\\:\*\|"]/g;
 var controlRe = /[\x00-\x1f\x80-\x9f]/g;
@@ -36,7 +41,7 @@ var reservedRe = /^\.+$/;
 var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 var windowsTrailingRe = /[\. ]+$/;
 
-function sanitize(input, replacement) {
+function sanitize(input, replacement, truncateLength, preserveFileExt) {
   if (typeof input !== 'string') {
     throw new Error('Input must be string');
   }
@@ -46,14 +51,18 @@ function sanitize(input, replacement) {
     .replace(reservedRe, replacement)
     .replace(windowsReservedRe, replacement)
     .replace(windowsTrailingRe, replacement);
-  return truncate(sanitized, 255);
+  return preserveFileExt ? 
+    truncate(sanitized, Math.max(0, truncateLength - extname(sanitized).length)) + truncate(extname(sanitized), truncateLength)
+    : truncate(sanitized, truncateLength);
 }
 
 module.exports = function (input, options) {
   var replacement = (options && options.replacement) || '';
-  var output = sanitize(input, replacement);
+  var preserveFileExt = (options && options.preserveFileExt) || false;
+  var truncateLength = (options && typeof options.truncateLength == typeof 0) ? options.truncateLength : 255;
+  var output = sanitize(input, replacement, truncateLength, preserveFileExt);
   if (replacement === '') {
     return output;
   }
-  return sanitize(output, '');
+  return sanitize(output, '', truncateLength, preserveFileExt);
 };

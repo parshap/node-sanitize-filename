@@ -115,6 +115,21 @@ test("255 characters max", function(t) {
   t.end();
 });
 
+test("variable length, include/exclude file extension", function(t) {
+  t.ok(sanitize("01234567.89A", { truncateLength: 8+1+3 }) == "01234567.89A");
+  t.ok(sanitize("0123456789ABC.DEF", { truncateLength: 8+1+3, preserveFileExt: true }) == "01234567.DEF");
+  t.ok(sanitize("\u000001234567.89ABCDEF", { truncateLength: 8+1+3, preserveFileExt: true }) == "012.89ABCDEF");
+  t.ok(sanitize("\u000001234567.89ABCDEF", { truncateLength: 8+1+3, preserveFileExt: false }) == "01234567.89A");
+  t.ok(sanitize("\u000001234567", { truncateLength: 4, preserveFileExt: true }) == "0123");
+  t.ok(sanitize("\u000001234567.", { truncateLength: 1, preserveFileExt: true }) == "0");
+  t.ok(sanitize("\u000001234567.", { replacement: "XYZ", truncateLength: 2, preserveFileExt: true }) == "XY");
+  t.ok(sanitize("\u000001234567.89ABCDEF", { truncateLength: 0, preserveFileExt: true }) == "");
+  t.ok(sanitize("\u0000", { truncateLength: 255, preserveFileExt: true }) == "");
+  t.ok(sanitize("\u00000123.ABCD", { truncateLength: 4, preserveFileExt: true }) == ".ABC");
+  t.ok(sanitize("01234567.89A", { truncateLength: -12 }) == "");
+  t.end();
+});
+
 // Test the handling of non-BMP chars in UTF-8
 //
 
