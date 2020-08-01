@@ -115,29 +115,18 @@ test("255 characters max", function(t) {
   t.end();
 });
 
-test("custom truncate function", function(t) {
-  var string = repeat("a\u0000 ", 300); // lot's of blank space between characters
-  t.ok(string.length > 255);
-  t.ok(sanitize(string, { truncate: (name) => { // replace whitespace with blank
-    return !name ? name : name.replace(new RegExp(/\s/g), '');
-  }}).length <= 300); // should strip out whitespace
-  t.end();
-});
-
-test("custom truncate function with replacement", function(t) {
-  var string = repeat("x \u0000", 128); // lot's of blank space between characters
-  t.ok(string.length > 10);
-  t.ok(sanitize(string, { replacement: "_", truncate: (name) => { // replace whitespace with blank
-    name = !name ? name : name.replace(new RegExp(/\s/g), '');
-    return name;
-  }}).length == 256); // should replace illegal character \u0000 with underscore and strip excess space
-  t.end();
-});
-
-test("260 characters max", function(t) {
-  var string = repeat("a ", 300);
-  t.ok(string.length > 260);
-  t.ok(sanitize(string, { truncate: 260 }).length <= 260);
+test("variable length, include/exclude file extension", function(t) {
+  t.ok(sanitize("01234567.89A", { truncateLength: 8+1+3 }) == "01234567.89A");
+  t.ok(sanitize("0123456789ABC.DEF", { truncateLength: 8+1+3, preserveFileExt: true }) == "01234567.DEF");
+  t.ok(sanitize("\u000001234567.89ABCDEF", { truncateLength: 8+1+3, preserveFileExt: true }) == "012.89ABCDEF");
+  t.ok(sanitize("\u000001234567.89ABCDEF", { truncateLength: 8+1+3, preserveFileExt: false }) == "01234567.89A");
+  t.ok(sanitize("\u000001234567", { truncateLength: 4, preserveFileExt: true }) == "0123");
+  t.ok(sanitize("\u000001234567.", { truncateLength: 1, preserveFileExt: true }) == "0");
+  t.ok(sanitize("\u000001234567.", { replacement: "XYZ", truncateLength: 2, preserveFileExt: true }) == "XY");
+  t.ok(sanitize("\u000001234567.89ABCDEF", { truncateLength: 0, preserveFileExt: true }) == "");
+  t.ok(sanitize("\u0000", { truncateLength: 255, preserveFileExt: true }) == "");
+  t.ok(sanitize("\u00000123.ABCD", { truncateLength: 4, preserveFileExt: true }) == ".ABC");
+  t.ok(sanitize("01234567.89A", { truncateLength: -12 }) == "");
   t.end();
 });
 

@@ -102,10 +102,15 @@ Options:
  return value will be used as the replacement. See [`String.prototype.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)
  for more info.
 
- * `options.truncate`: *optional, number/function, default: `255`*. If passed
- as a number, it's used as the length in truncate call to reduce file name to desired length. 
- If passed as a function, the function will be called with the filename and it's
- return value will be used as the final output value out of sanitize.
- If truncate callback function is specified AND `options.replacement` is non-default,
- then the truncate callback function will be called twice - once during replacement
- (but before sanitization), and once during sanitization.
+ * `options.truncateLength`: *optional, number, default: `255`*. Used in truncate call
+ to reduce string to the specified  length. If <=0, returns ''.
+
+ * `options.preserveFileExt`: *optional, boolean, default: `false`*. By default, 
+ string is trimmed to the `options.truncateLength` length. If true, file extension
+ is preserved within the `options.truncateLength` bounds, unless extension is
+ longer then `options.truncateLength` then the result is just the extension trimmed
+ to the `options.truncateLength` length. Note: extensions is parsed using
+ `path.extname` and as such the leading '.' in the extension name, unless it's a
+ 'dot-file' in which case the extension is empty. Note that one exception is files
+ that end with a "." - such pattern is transformed away using `options.replacement`
+ (default: stripped away).

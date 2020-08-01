@@ -33,6 +33,7 @@
  */
 
 var truncate = require("truncate-utf8-bytes");
+var extname = require("path").extname;
 
 var illegalRe = /[\/\?<>\\:\*\|"]/g;
 var controlRe = /[\x00-\x1f\x80-\x9f]/g;
@@ -40,12 +41,9 @@ var reservedRe = /^\.+$/;
 var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 var windowsTrailingRe = /[\. ]+$/;
 
-function sanitize(input, replacement, len) {
+function sanitize(input, replacement, truncateLength, preserveFileExt) {
   if (typeof input !== 'string') {
     throw new Error('Input must be string');
-  }
-  if (typeof len !== 'number' && typeof len !== 'function') {
-    throw new Error('truncate must be number of a callback function');
   }
   var sanitized = input
     .replace(illegalRe, replacement)
@@ -53,15 +51,18 @@ function sanitize(input, replacement, len) {
     .replace(reservedRe, replacement)
     .replace(windowsReservedRe, replacement)
     .replace(windowsTrailingRe, replacement);
-  return (typeof len == 'function' ? len(sanitized) : truncate(sanitized, len));
+  return preserveFileExt ? 
+    truncate(sanitized, Math.max(0, truncateLength - extname(sanitized).length)) + truncate(extname(sanitized), truncateLength)
+    : truncate(sanitized, truncateLength);
 }
 
 module.exports = function (input, options) {
   var replacement = (options && options.replacement) || '';
-  var truncateOption = (options && options.truncate) || 255;
-  var output = sanitize(input, replacement, truncateOption);
+  var preserveFileExt = (options && options.preserveFileExt) || false;
+  var truncateLength = (options && typeof options.truncateLength == typeof 0) ? options.truncateLength : 255;
+  var output = sanitize(input, replacement, truncateLength, preserveFileExt);
   if (replacement === '') {
     return output;
   }
-  return sanitize(output, '', truncateOption);
+  return sanitize(output, '', truncateLength, preserveFileExt);
 };
