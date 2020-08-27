@@ -101,3 +101,8 @@ Options:
  a function, the function will be called with the invalid characters and it's
  return value will be used as the replacement. See [`String.prototype.replace`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace)
  for more info.
+
+ * `options.extension`: *optional, string, default: `""`*. Preserve this
+ filename extension when truncating the filename. If it is longer than 255
+ bytes, it will also be truncated. If it contains invalid characters, this
+ option will be ignored.

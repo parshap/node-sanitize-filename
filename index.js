@@ -40,20 +40,32 @@ function sanitize(input, replacement) {
   if (typeof input !== 'string') {
     throw new Error('Input must be string');
   }
+
   var sanitized = input
     .replace(illegalRe, replacement)
     .replace(controlRe, replacement)
     .replace(reservedRe, replacement)
     .replace(windowsReservedRe, replacement)
     .replace(windowsTrailingRe, replacement);
-  return truncate(sanitized, 255);
+
+  if (replacement !== '')
+    sanitized = sanitize(sanitized, '');
+
+  return sanitized;
 }
 
 module.exports = function (input, options) {
   var replacement = (options && options.replacement) || '';
+  var extension = (options && options.extension) || '';
+  var maxLength = 255;
   var output = sanitize(input, replacement);
-  if (replacement === '') {
-    return output;
+  if (extension && input.endsWith(extension) && output.endsWith(extension)) {
+    var truncatedExtension = truncate(extension, maxLength);
+    if (truncatedExtension.length < extension.length)
+      return truncatedExtension;
+    var basename = output.slice(0, -extension.length);
+    // TODO - extension length should be byte length
+    return truncate(basename, maxLength - extension.length) + extension;
   }
-  return sanitize(output, '');
+  return truncate(output, maxLength);
 };

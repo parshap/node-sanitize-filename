@@ -108,10 +108,45 @@ test("invalid replacement", function (t) {
   t.end();
 });
 
+test("extension", function (t) {
+  t.equal(sanitize("file.txt", { extension: ".txt" }), "file.txt");
+  t.end();
+});
+
 test("255 characters max", function(t) {
   var string = repeat("a", 300);
   t.ok(string.length > 255);
   t.ok(sanitize(string).length <= 255);
+  t.end();
+});
+
+test("255 characters max with extension", function(t) {
+  var extension = '.tar.gz'
+  var string = repeat("a", 255) + extension;
+  var actual = sanitize(string, { extension });
+  var expected = repeat("a", 255 - extension.length) + extension;
+  t.equal(actual.length, 255);
+  t.equal(actual, expected);
+  t.end();
+});
+
+test("255 characters max with long extension", function(t) {
+  var extension = '.' + repeat("x", 255);
+  var string = 'a' + extension;
+  var actual = sanitize(string, { extension });
+  var expected = extension.slice(0, 255);
+  t.equal(actual.length, 255);
+  t.equal(actual, expected);
+  t.end();
+});
+
+test("255 characters max with invalid extension", function(t) {
+  var extension = '.>'
+  var string = repeat("a", 255) + extension;
+  var actual = sanitize(string, { extension });
+  var expected = string.slice(0, 255);
+  t.equal(actual.length, 255);
+  t.equal(actual, expected);
   t.end();
 });
 
