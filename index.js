@@ -40,6 +40,15 @@ function sanitize(input, replacement) {
   if (typeof input !== 'string') {
     throw new Error('Input must be string');
   }
+  if (
+    replacement.match(illegalRe) !== null ||
+    replacement.match(controlRe) !== null ||
+    reservedRe.test(replacement) ||
+    windowsReservedRe.test(replacement) ||
+    windowsTrailingRe.test(replacement)
+  ) {
+    throw new Error('Reserved symbols must not used in replacement string');
+  }
   var sanitized = input
     .replace(illegalRe, replacement)
     .replace(controlRe, replacement)
