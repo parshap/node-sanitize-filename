@@ -175,6 +175,16 @@ test("invalid input", function(t) {
   t.end();
 });
 
+test("ReDoS trailing dots and spaces", function(t) {
+  var start = Date.now();
+  sanitize(repeat(".", 30000) + "x");
+  sanitize(repeat(" ", 30000) + "x");
+  sanitize(repeat(". ", 15000) + "x");
+  var elapsed = Date.now() - start;
+  t.assert(elapsed < 1000, "should complete in under 1 second (took " + elapsed + "ms)");
+  t.end();
+});
+
 function testStringUsingFS(str, t) {
   var sanitized = sanitize(str) || "default";
   var filepath = path.join(tempdir, sanitized);

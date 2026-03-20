@@ -34,7 +34,17 @@ var illegalRe = /[\/\?<>\\:\*\|"]/g;
 var controlRe = /[\x00-\x1f\x80-\x9f]/g;
 var reservedRe = /^\.+$/;
 var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
-var windowsTrailingRe = /[\. ]+$/;
+
+/**
+ * Strip trailing spaces and dots, which are not allowed on some Windows file
+ * systems. Does not use a regex to avoid a quadratic ReDoS vulnerability
+ * (CWE-1333).
+ */
+function replaceTrailingDotsAndSpaces(str, replacement) {
+  var end = str.length;
+  while (end > 0 && (str[end - 1] === '.' || str[end - 1] === ' ')) end--;
+  return end < str.length ? str.slice(0, end) + replacement : str;
+}
 
 function sanitize(input, replacement) {
   if (typeof input !== 'string') {
@@ -44,8 +54,8 @@ function sanitize(input, replacement) {
     .replace(illegalRe, replacement)
     .replace(controlRe, replacement)
     .replace(reservedRe, replacement)
-    .replace(windowsReservedRe, replacement)
-    .replace(windowsTrailingRe, replacement);
+    .replace(windowsReservedRe, replacement);
+  sanitized = replaceTrailingDotsAndSpaces(sanitized, replacement);
   return truncate(sanitized, 255);
 }
 
