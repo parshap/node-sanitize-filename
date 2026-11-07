@@ -1,6 +1,6 @@
 {
   "name": "sanitize-filename",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "description": "Sanitize a string for use as a filename",
   "keywords": [
     "file",
