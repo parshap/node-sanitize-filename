@@ -23,3 +23,12 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: npm ci
       - run: npm test
+
+  # Single required check, so branch protection doesn't track the matrix
+  ci:
+    if: always()
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - if: needs.test.result != 'success'
+        run: exit 1
