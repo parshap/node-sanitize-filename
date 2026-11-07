@@ -43,7 +43,11 @@ var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 function replaceTrailingDotsAndSpaces(str, replacement) {
   var end = str.length;
   while (end > 0 && (str[end - 1] === '.' || str[end - 1] === ' ')) end--;
-  return end < str.length ? str.slice(0, end) + replacement : str;
+  if (end === str.length) return str;
+  if (typeof replacement === 'function') {
+    return str.slice(0, end) + replacement(str.slice(end), end, str);
+  }
+  return str.slice(0, end) + replacement;
 }
 
 function sanitize(input, replacement) {

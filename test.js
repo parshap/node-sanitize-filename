@@ -68,6 +68,17 @@ test("restricted suffixes", function(t) {
   t.end();
 });
 
+test("restricted suffixes with function replacement", function(t) {
+  var args;
+  var output = sanitize("mr. ", { replacement: function() {
+    args = Array.prototype.slice.call(arguments);
+    return "_";
+  }});
+  t.equal(output, "mr_");
+  t.deepEqual(args, [". ", 2, "mr. "]);
+  t.end();
+});
+
 test("relative paths", function(t) {
   [".", "..", "./", "../", "/..", "/../", "*.|."].forEach(function(name) {
     t.equal(sanitize(name), "");
