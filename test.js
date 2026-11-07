@@ -98,6 +98,9 @@ test("reserved filename in Windows", function(t) {
   t.equal(sanitize("aux.txt"), "");
   t.equal(sanitize("LPT9.asdfasdf"), "");
   t.equal(sanitize("LPT10.txt"), "LPT10.txt");
+  t.equal(sanitize("con "), "");
+  t.equal(sanitize("nul ."), "");
+  t.equal(sanitize("con" + repeat(" ", 300) + "x"), "");
   t.end();
 });
 
@@ -108,6 +111,7 @@ test("reserved filename in Windows with replacement", function(t) {
   t.equal(sanitize("aux.txt", REPLACEMENT_OPTS), "_");
   t.equal(sanitize("LPT9.asdfasdf", REPLACEMENT_OPTS), "_");
   t.equal(sanitize("LPT10.txt", REPLACEMENT_OPTS), "LPT10.txt");
+  t.equal(sanitize("con ", REPLACEMENT_OPTS), "con_");
   t.end();
 });
 
@@ -123,6 +127,15 @@ test("255 characters max", function(t) {
   var string = repeat("a", 300);
   t.ok(string.length > 255);
   t.ok(sanitize(string).length <= 255);
+  t.end();
+});
+
+test("no trailing dots or spaces after truncation", function(t) {
+  [" ", "."].forEach(function(suffix) {
+    var name = repeat("a", 254) + suffix + "b";
+    t.equal(sanitize(name), repeat("a", 254));
+    t.equal(sanitize(name, REPLACEMENT_OPTS), repeat("a", 254));
+  });
   t.end();
 });
 

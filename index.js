@@ -60,7 +60,9 @@ function sanitize(input, replacement) {
     .replace(reservedRe, replacement)
     .replace(windowsReservedRe, replacement);
   sanitized = replaceTrailingDotsAndSpaces(sanitized, replacement);
-  return truncate(sanitized, 255);
+  sanitized = truncate(sanitized, 255);
+  // Stripping and truncating can expose a trailing dot/space or reserved name
+  return replaceTrailingDotsAndSpaces(sanitized, '').replace(windowsReservedRe, '');
 }
 
 module.exports = function (input, options) {
