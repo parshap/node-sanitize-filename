@@ -204,7 +204,7 @@ test("invalid input", function(t) {
       },
     },
     [],
-    new Buffer('asdf'),
+    Buffer.from('asdf'),
   ].forEach(function(input) {
     t.throws(function() {
       sanitize(input);
@@ -276,8 +276,8 @@ if ( ! process.browser) {
 
   var fs = require("fs");
   var path = require("path");
-  var mktemp = require("mktemp");
-  var tempdir = mktemp.createDirSync("sanitize-filename-test-XXXXXX");
+  var os = require("os");
+  var tempdir = fs.mkdtempSync(path.join(os.tmpdir(), "sanitize-filename-test-"));
 
   try {
     var blns = require("./vendor/big-list-of-naughty-strings/blns.json");
