@@ -90,6 +90,21 @@ test("reserved filename in Windows", function(t) {
   t.end();
 });
 
+test("superscript Windows device names", function(t) {
+  ["COM", "LPT"].forEach(function(prefix) {
+    ["\u00b9", "\u00b2", "\u00b3"].forEach(function(digit) {
+      [prefix + digit, prefix.toLowerCase() + digit + ".txt"].forEach(function(name) {
+        t.equal(sanitize(name), "");
+        t.equal(sanitize(name, REPLACEMENT_OPTS), "_");
+      });
+    });
+  });
+  ["COM\u2074", "LPT\u2070", "COM\u00b9extra", "file.COM\u00b9"].forEach(function(name) {
+    t.equal(sanitize(name), name);
+  });
+  t.end();
+});
+
 test("reserved filename in Windows with replacement", function(t) {
   t.equal(sanitize("con", REPLACEMENT_OPTS), "_");
   t.equal(sanitize("COM1", REPLACEMENT_OPTS), "_");

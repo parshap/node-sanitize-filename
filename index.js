@@ -18,7 +18,8 @@
  * Reserved filenames in Windows ("CON", "PRN", "AUX", "NUL", "COM1",
  * "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
  * "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", and
- * "LPT9") case-insesitively and with or without filename extensions.
+ * "LPT9", "COM¹", "COM²", "COM³", "LPT¹", "LPT²", and "LPT³")
+ * case-insensitively and with or without filename extensions.
  *
  * Capped at 255 characters in length.
  * http://unix.stackexchange.com/questions/32795/what-is-the-maximum-allowed-filename-and-folder-size-with-ecryptfs
@@ -33,7 +34,7 @@ var truncate = require("truncate-utf8-bytes");
 var illegalRe = /[\/\?<>\\:\*\|"]/g;
 var controlRe = /[\x00-\x1f\x80-\x9f]/g;
 var reservedRe = /^\.+$/;
-var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
+var windowsReservedRe = /^(con|prn|aux|nul|com[0-9\u00b9\u00b2\u00b3]|lpt[0-9\u00b9\u00b2\u00b3])(\..*)?$/i;
 
 /**
  * Strip trailing spaces and dots, which are not allowed on some Windows file
