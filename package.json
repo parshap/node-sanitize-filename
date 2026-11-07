@@ -19,15 +19,13 @@
     "url": "git@github.com:parshap/node-sanitize-filename.git"
   },
   "scripts": {
-    "test": "tape test.js",
-    "test-browser": "airtap --local --open -- test.js",
-    "test-browser-sauce": "airtap -- test.js"
+    "test": "acorn --ecma5 --silent index.js && tape test.js"
   },
   "dependencies": {
     "truncate-utf8-bytes": "^1.0.0"
   },
   "devDependencies": {
-    "airtap": "^2.0.3",
+    "acorn": "^8.19.0",
     "browserify": "^14.0.0",
     "concat-stream": "^1.5.1",
     "mktemp": "^0.4.0",

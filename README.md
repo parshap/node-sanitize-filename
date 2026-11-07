@@ -1,4 +1,4 @@
-# sanitize-filename [![build status](https://secure.travis-ci.org/parshap/node-sanitize-filename.svg?branch=master)](http://travis-ci.org/parshap/node-sanitize-filename)
+# sanitize-filename [![build status](https://github.com/parshap/node-sanitize-filename/actions/workflows/test.yml/badge.svg)](https://github.com/parshap/node-sanitize-filename/actions/workflows/test.yml)
 
 Sanitize a string to be safe for use as a filename by removing directory
 paths and invalid characters.
